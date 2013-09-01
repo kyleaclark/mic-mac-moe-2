@@ -1,0 +1,36 @@
+{
+  "name": "mic-mac-moe-2",
+  "version": "0.1.0",
+  "repository" : {
+    "type" : "git",
+    "url" : "http://github.com/kyleaclark/mic-mac-moe-2.git"
+  },
+  "engines": {
+    "node": "0.10.x",
+    "docpad": "6.44.0"
+  },
+  "dependencies": {
+    "docpad": "6.44.0",
+    "docpad-plugin-cleanurls": "2.x",
+    "docpad-plugin-eco": "2.x",
+    "docpad-plugin-partials": "2.5.1",
+    "docpad-plugin-proxy": "2.x",
+    "docpad-plugin-nodesass": "~2.0.0"
+  },
+  "devDependencies": {
+    "mocha": "*",
+    "groc": "*",
+    "uglify-js": "*",
+    "grunt": "~0.4.1",
+    "bower": "~1.0.0",
+    "grunt-contrib-requirejs": "~0.4.1",
+    "grunt-exec": "~0.4.0",
+    "grunt-mocha-cli": "~1.0.5",
+    "grunt-mocha": "~0.3.4",
+    "grunt-contrib-connect": "~0.3.0",
+    "grunt-cli": "~0.1.8",
+    "grunt-groc": "~0.3.0",
+    "grunt-node-version": "~0.1.0"
+  }
+}
+

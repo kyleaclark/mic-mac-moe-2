@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en-US" class="no-js">
+  <head>
+    <meta charset="UTF-8" />
+
+    <!-- Site Info
+    ================================================== -->
+    <title>{{{document.title}}}</title>
+    <meta name="description" content="{{document.description}}" />
+    <meta name="keywords" content="{{document.keywords}}" />
+
+    <!-- Mobile Specific Meta
+    ================================================== -->
+    <meta name="viewport" id="viewport-meta" content="width=device-width, initial-scale=1">
+
+    <!-- CSS
+    ================================================== -->
+    <link rel="stylesheet" href="/css/all.css" />
+   
+    <!--[if lt IE 9]>
+      <script src="{{contextRoot}}/lib/html5shiv-3.6.2.js"></script>
+    <![endif]-->
+  </head>
+  <body class="{{document.body_class}}">
+
+    <%- @content %>
+
+     <!-- JS
+    ================================================== -->
+    <% if @getEnvironment() is "production":  %>
+      <script src="/js/app.js"></script>
+    <% else: %>
+      <%- @getBlock('scripts').toHTML() %>
+    <% end %>
+
+  </body>
+</html>
