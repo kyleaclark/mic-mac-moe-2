@@ -1,0 +1,10 @@
+src/files/js/output.js
+*.psd
+*.class
+*.swp
+*.log
+.sass-cache/
+/out/
+/node_modules/
+.DS_Store
+.idea

@@ -1,0 +1,21 @@
+{
+  "name": "docpad-plugin-concatenation",
+  "version": "0.1.0",
+  "description": "Adds support for js/css concatenation",
+  "keywords": [
+    "docpad",
+    "docpad-plugin",
+    "templating",
+    "templates",
+    "render",
+    "rendering"
+  ],
+  "devDependencies": {
+    "cson": "*"
+  },
+  "engines": {
+    "node": ">=0.8.0",
+    "docpad": "6.x"
+  },
+  "main": "./concatenation.plugin.coffee"
+}
