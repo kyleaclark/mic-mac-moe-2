@@ -8,7 +8,7 @@ define([], function() {
 
   require.config({
     paths: {
-      jquery: "../src/files/lib/jquery-1.10.2",
+      jquery: "../src/files/lib/jquery-2.0.3",
       js: "../src/files/js",
       lib: "../src/files/lib"
     }
