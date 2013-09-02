@@ -5,9 +5,9 @@
 
     <!-- Site Info
     ================================================== -->
-    <title>{{{document.title}}}</title>
-    <meta name="description" content="{{document.description}}" />
-    <meta name="keywords" content="{{document.keywords}}" />
+    <title><%= @document.title %></title>
+    <meta name="description" content="<%= @document.description %>" />
+    <meta name="keywords" content="<%= @document.keywords %>" />
 
     <!-- Mobile Specific Meta
     ================================================== -->
@@ -15,7 +15,15 @@
 
     <!-- CSS
     ================================================== -->
-    <link rel="stylesheet" href="/css/all.css" />
+    <!-- Helvetica Neuu-Replica Font -->
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Arimo:400,700,400italic,700italic">
+
+    <!-- Styles -->
+    <% if @getEnvironment() is "production":  %>
+      <link rel="stylesheet" href="css/app.css" />
+    <% else : %>
+      <link rel="stylesheet" href="/css/all.css" />
+    <% end %>
    
     <!--[if lt IE 9]>
       <script src="{{contextRoot}}/lib/html5shiv-3.6.2.js"></script>
