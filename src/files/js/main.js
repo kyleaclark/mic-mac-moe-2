@@ -1,15 +1,16 @@
 define([
   "jquery",
+  "js/app"
 ], function (
   $
 ) {
   "use strict";
 
   /**
-   * DOM Ready
-   */
+  * DOM Ready
+  */
   $(function () {
-    console.log("dom ready");
+    MMM.app._m.init();
   });
 
 });
