@@ -1,103 +1,96 @@
-MMM.game = (function () {
-	var
-		/** 
-	  * Public namespace copy
-	  */
-	  NS = MMM,
-
-	  /**
-    * Local object copies of public module methods
-    */
-    _board,
-    _pres,
-    _storeTurn,
-
-    /**
-    * Local object to expose public methods
-    */
-    _m,
-
-    /**
-    * Local variables
-    */
-    $gameBoard,
-    $gameWinner,
-    $playAgain,
-    RESET_GAME;
-
-  /**
-  * Local initialize
+define([
+  "jquery",
+  "js/Pres"
+  /*
+  "js/Board",
+  "js/Win",
+  "js/Turn"
   */
-  function initialize () {
-  	setupPublicMethodCopies();
-    setGlobalVars();
-    bindEvents();
+], function (
+  $,
+  Pres
+  /*
+  Board,
+  Win,
+  Turn
+  */
+) {
+  "use strict";  
 
-  	/**
-  	* Public method dependencies 
-  	*/
-  	function setupPublicMethodCopies () {
-  		_board = {
-  			resetBoardData : NS.board._m.resetBoardData
-  		};
-
-      _pres = {
-        hideWin : NS.pres._m.hideWin
+  function Game (config) {
+    var
+      self = this,
+      defaults = {
+        $gameBoard: $("#game-board"),
+        $gameWinner: $("#game-winner"),
+        $playAgain: $(".btn-play-again")
       };
 
-  		_storeTurn = {
-  			init : NS.storeTurn._m.init
-  		};
-  	}
+    function init () {
 
-    function setGlobalVars () {
-      $gameBoard = $("#game-board");
-      $gameWinner = $("#game-winner");
-      $playAgain = $(".btn-play-again");
-      RESET_GAME = true;
-    }
+      function initVars () {
+        self.defaults = defaults;
+        self.options = $.extend({}, defaults, config);
+        self.$gameBoard = self.options.$gameBoard;
+        self.$gameWinner = self.options.$gameWinner;
+        self.$playAgain = self.options.$playAgain;
+        /*
+        _board = {
+          resetBoardData : NS.board._m.resetBoardData
+        };
 
-    function bindEvents () {
-      _m.playAgainEvent();
-    }
- 	}
+        _pres = {
+          hideWin : NS.pres._m.hideWin
+        };
 
-   /**
-   * Public methods
-   */
-   _m = {
-    newGame : function (reset) {
-      if (reset) {
-        _board.resetBoardData();
-        _storeTurn.init();
-        $gameWinner.trigger("hidePlayerWins");
+        _storeTurn = {
+          init : NS.storeTurn._m.init
+        };
+        */
       }
 
-      $gameBoard.trigger("renderGameBoardSquares");
-    },
+      function initObjects () {
+        self.pres = new Pres();
+        /*
+        self.board = new Board();
+        self.win = new Win();
+        self.turn = new Turn();
+        */
+      }
 
-    playAgainEvent : function () {
-      $playAgain.on("click", function () {
-        _m.newGame(RESET_GAME);
-      });
-    },
+      function initGameBoard () {
+        
+      }
 
-    setWinner : function (player) {
-      /**
-      * Potential refactor to track and store multiple winners 
-      */
-      $gameWinner.trigger("renderPlayerWins", {"player" : player});
-    },
+      function setBinds () {
+        self.$playAgain.on("click", function () {
+          self.resetGame.apply(self, arguments);
+        });
+      }
+  
+      initVars();
+      initObjects();
+      initGameBoard();
+      setBinds();
+    }
 
-   	init : function () {
-   		initialize();
-   	}
+    init();
+  }
+
+  Game.prototype.newGame = function () {
+    this.pres.renderBoardTemplate();
+    this.$gameBoard.trigger("renderBoardTemplate");
   };
 
-  /**
-  * Expose public methods
-  */
-  return {
-    _m : _m
-  };
-}());
+  Game.prototype.resetGame = function () {
+    /*
+    this.board.resetBoardData();
+    this.turn.resetTurnData();
+    this.$gameWinner.trigger("hidePlayerWins");
+    */
+    this.newGame();
+  }
+
+  return Game;
+
+});

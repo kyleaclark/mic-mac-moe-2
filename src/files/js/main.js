@@ -1,16 +1,31 @@
 define([
   "jquery",
-  "js/app"
+  "js/Game"
 ], function (
-  $
+  $,
+  Game
 ) {
   "use strict";
 
-  /**
-  * DOM Ready
-  */
-  $(function () {
-    MMM.app._m.init();
-  });
+  window.NS = window.NS || {};
+
+  (function Main () {
+    var NS = window.NS;
+
+    function init () {
+      var game;
+
+      $(function () {
+        NS.game = new Game();
+        game = NS.game;
+
+        game.$gameBoard.trigger("generateBoardTemplate");
+        game.$gameBoard.trigger("renderEmptyBoard");
+      });
+
+    }
+
+    init();
+  })();
 
 });

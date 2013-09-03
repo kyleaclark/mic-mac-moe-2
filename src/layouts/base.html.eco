@@ -29,7 +29,7 @@
       <script src="{{contextRoot}}/lib/html5shiv-3.6.2.js"></script>
     <![endif]-->
   </head>
-  <body class="{{document.body_class}}">
+  <body class="<%= @document.body_class %>">
 
     <%- @content %>
 

@@ -1,203 +1,120 @@
+define([
+  "jquery",
+  "js/Game"
+], function (
+  $,
+  Game
+) {
+  "use strict";
 
-/**
-* Store the current player turn value 
-*/
-MMM.storeTurn = (function () {
-  var 
-    /** 
-    * Local variables
-    */
-    turn,
-    numberOfTurns,
+  function Turn (config) {
+    var 
+      self = this,
+      defaults = {
+        gameBoard: "game-board";
+        resetGame: true;
+      };
 
-    /**
-    * Local object to expose public methods
-    */
-    _m;
+      function init () {
 
-  /**
-  * Local initialize
-  */
-  function initialize () {
-    setGlobalVars();
+        function initVars () {
+          self.defaults = defaults;
+          self.options = $.extend({}, defaults, config);
+          self.gameBoard = self.options.gameBoard;
+          self.$boardID = $("#" + gameBoard);
+          self.playerTurn = "";
+          self.numberOfTurns = 0;
+          self.turnSquare = "";
+          /*
+          _game = {
+            newGame : NS.game._m.newGame,
+            setWinner : NS.game._m.setWinner
+          };
 
-    function setGlobalVars() {
-      turn = "X",
-      numberOfTurns = 0;
-    }
+          _board = {
+            getPlayerBySquare : NS.board._m.getPlayerBySquare,
+            setPlayerBySquare : NS.board._m.setPlayerBySquare,
+            resetBoardData : NS.board._m.resetBoardData
+          };
+
+          _storeTurn = {
+            get : NS.storeTurn._m.get,
+            set : NS.storeTurn._m.set,
+            getNumberOfTurns : NS.storeTurn._m.getNumberOfTurns
+          };
+          
+          _pres = {
+            renderTurn : NS.pres._m.renderTurn,
+            renderWin : NS.pres._m.renderWin,
+            hideWin : NS.pres._m.hideWin
+          };
+
+          _win = {
+            isWin : NS.win._m.isWin
+          };
+          */
+        }
+
+        function setBinds () {
+          self.$boardID.on("click", function (event) {
+            handleTurnEvent(event);
+          });
+        }
+
+        initVars();
+        setBinds();
+      }
+
+    init();
   }
-  
-  /**
-  * Public methods
-  */
-  _m = {
-    get: function () {
-      return turn;
-    },
 
-    set: function (resetTurn) {
-      turn = resetTurn;
-      numberOfTurns += 1;
-    },
+  (function initStaticVars () {
+    var that = Turn;
 
-    getNumberOfTurns: function () {
-      return numberOfTurns;
-    },
+    that.X = "X";
+    that.O = "O";
+  })();
 
-    init: function () {
-      initialize();
+  Turn.isValid = function () {
+    if (square !== GAME_BOARD && _board.getPlayerBySquare(square) === "") {
+      return true;
     }
+    return false;
+  }
+    
+  Turn.prototype.getTurn = function () {
+    return this.playerTurn;
   };
 
-  /**
-  * Expose public methods
-  */
-  return {
-    _m : _m
+  Turn.prototype.setTurn = function (player) {
+    this.playerTurn = player;
+    this.numberOfTurns += 1;
   };
 
-}());
+  Turn.prototype.getNumberOfTurns = function () {
+    return this.numberOfTurns;
+  };
 
-/**
-* Handle player turn 
-*/
-MMM.handleTurn = (function (square) {
-  var 
-    /** 
-    * Public namespace copy
-    */
-    NS = MMM,
+  Turn.prototype.handleTurnEvent = function (event) {
+    this.turnSquare = event.target.id;
 
-    /**
-    * Local object copies of public module methods
-    */
-    _game,
-    _board,
-    _storeTurn,
-    _pres,
-    _win,
-
-    /**
-    * Local object to expose local methods publically
-    */
-    _m,
-
-    /**
-    * Local variables
-    */
-    X,
-    O,
-    GAME_BOARD,
-    RESET_GAME,
-    $boardID,
-    square,
-    player;
-
-  /**
-  * Local initialize
-  */
-  function initialize () {
-    setPublicMethodCopies();
-    setGlobalVars();
-
-    function setPublicMethodCopies () {
-      _game = {
-        newGame : NS.game._m.newGame,
-        setWinner : NS.game._m.setWinner
-      };
-
-      _board = {
-        getPlayerBySquare : NS.board._m.getPlayerBySquare,
-        setPlayerBySquare : NS.board._m.setPlayerBySquare,
-        resetBoardData : NS.board._m.resetBoardData
-      };
-
-      _storeTurn = {
-        get : NS.storeTurn._m.get,
-        set : NS.storeTurn._m.set,
-        getNumberOfTurns : NS.storeTurn._m.getNumberOfTurns
-      };
-      
-      _pres = {
-        renderTurn : NS.pres._m.renderTurn,
-        renderWin : NS.pres._m.renderWin,
-        hideWin : NS.pres._m.hideWin
-      };
-
-      _win = {
-        isWin : NS.win._m.isWin
-      };
-    }
-
-    function setGlobalVars() {
-      X = "X";
-      O = "O";
-      GAME_BOARD = "game-board";
-      $boardID = $("#" + GAME_BOARD);
-      RESET_GAME = true;
-    }
-  }
-
-  /** 
-  * Private methods 
-  */
-  function updatePlayerTurn () {
-    if (player === X) {
-      _storeTurn.set(O);
-    } else {
-      _storeTurn.set(X);
-    }
-  }
-
-  function bindUpdatePlayerEvent () {
-    // when modStoreTurn player is changed
-  }
-
-  function handleTurnClickEvent (event) {
-    square = event.target.id;
-
-    if (isTurnValid()) {
-      player = _storeTurn.get();
+    if (this.isTurnValid()) {
+      /* REFACTOR !
       _pres.renderTurn(player, square);
       _board.setPlayerBySquare(player, square);
+      */
 
       // Check for win after 5 turns when a win is possible
+      /* REFACTOR !
       if (_storeTurn.getNumberOfTurns() > 3 && _win.isWin(square)) {
         _game.setWinner(player);
       }
+      */
 
-      updatePlayerTurn();
-    }
-
-    function isTurnValid () {
-      if (square !== GAME_BOARD && _board.getPlayerBySquare(square) === "") {
-        return true;
-      }
-      return false;
+      this.numberOfTurns += 1;
     }
   }
 
-  /** 
-  * Public methods 
-  */ 
-  _m = {
-    bindTurnClickEvent: function () {
-      $boardID.on("click", function(event) {
-        handleTurnClickEvent(event);
-      });
-    },
+  return Turn;
 
-    init: function (square) {
-      initialize();
-      _m.bindTurnClickEvent();
-    }
-  };
-
-  /**
-  * Expose public methods
-  */
-  return {
-    _m : _m,
-  };
-  
-}());
+});

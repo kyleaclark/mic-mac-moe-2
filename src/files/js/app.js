@@ -1,7 +1,17 @@
 define([
-  "jquery"
+  "jquery",
+  "js/game",
+  "js/pres",
+  "js/board",
+  "js/win",
+  "js/turn"
 ], function (
-  $
+  $,
+  Game,
+  Pres,
+  Board,
+  Win,
+  Turn
 ) {
   "use strict";
 
@@ -25,7 +35,6 @@ define([
     */
     _m = {
       init: function () {
-        /*
         NS.game._m.init();
         NS.pres._m.init();
         NS.board._m.init();
@@ -34,7 +43,6 @@ define([
         NS.handleTurn._m.init();
         
         NS.game._m.newGame();
-        */
         console.log("init'd!");
       }
     };
