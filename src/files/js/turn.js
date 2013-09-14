@@ -99,17 +99,12 @@ define([
     this.turnSquare = event.target.id;
 
     if (this.isTurnValid()) {
-      /* REFACTOR !
-      _pres.renderTurn(player, square);
-      _board.setPlayerBySquare(player, square);
-      */
+      this.Pres.renderTurn(player, square);
+      this.Board.setPlayerBySquare(player, square);
 
-      // Check for win after 5 turns when a win is possible
-      /* REFACTOR !
-      if (_storeTurn.getNumberOfTurns() > 3 && _win.isWin(square)) {
-        _game.setWinner(player);
+      if (this.numberOfTurns > 3) {
+        this.Validate.isWin(square);
       }
-      */
 
       this.numberOfTurns += 1;
     }

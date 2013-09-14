@@ -1,16 +1,13 @@
 define([
   "jquery",
-  "js/Pres"
+  "js/BoardTemplate",
+  "js/BoardData"
   /*
-  "js/Board",
   "js/Win",
   "js/Turn"
   */
-], function (
-  $,
-  Pres
+], function ($, BoardTemplate, BoardData
   /*
-  Board,
   Win,
   Turn
   */
@@ -50,10 +47,11 @@ define([
       }
 
       function initObjects () {
-        self.pres = new Pres();
+        self.boardTemplate = new BoardTemplate();
+        self.boardData = new BoardData();
+        self.boardData.resetBoardData();
         /*
-        self.board = new Board();
-        self.win = new Win();
+        self.validate = new Validate();
         self.turn = new Turn();
         */
       }
@@ -67,11 +65,16 @@ define([
           self.resetGame.apply(self, arguments);
         });
       }
+
+      function createGlobalSelf () {
+        //NS.Game = self;
+      }
   
       initVars();
       initObjects();
       initGameBoard();
       setBinds();
+      createGlobalSelf();
     }
 
     init();

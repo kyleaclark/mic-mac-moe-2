@@ -1,31 +1,49 @@
 define([
   "jquery",
   "js/Game"
-], function (
-  $,
-  Game
-) {
+], function ($, Game) {
   "use strict";
 
-  window.NS = window.NS || {};
+  var NS = window.NS || {};
 
-  (function Main () {
-    var NS = window.NS;
+  // Main program object on window
+  NS.Main = function Main (config) {
+    var 
+      self = this,
+      defaults = {};
 
     function init () {
-      var game;
 
-      $(function () {
-        NS.game = new Game();
-        game = NS.game;
+      function initVars () {
+        self.defaults = defaults;
+        self.options = $.extend({}, defaults, config);
+      }
 
-        game.$gameBoard.trigger("generateBoardTemplate");
-        game.$gameBoard.trigger("renderEmptyBoard");
-      });
-
+      initVars();
     }
 
     init();
-  })();
 
+    // Initialize Game object
+    self.initGame = function () {
+      self.game = new Game();
+    };
+  };
+
+  // Initialize Main program object
+  NS.initMain = function () {
+    var main = new NS.Main();
+
+    function domReady () {
+      main.initGame();
+    }
+
+    // Dom Ready
+    $(function () {
+      domReady();
+    });
+  };
+
+  // Run main program
+  NS.initMain();
 });

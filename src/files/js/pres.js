@@ -1,14 +1,12 @@
 define([
   "jquery",
   "js/Game",
-  "js/config/BoardConfig",
 
   /* Does not return useful object */
   "underscore"
 ], function (
   $,
   Game,
-  BoardConfig
 ) {
   "use strict";
 
@@ -16,7 +14,7 @@ define([
     var
       self = this,
       defaults = {
-        $gameBoardTemplate: $("#game-board-template"),
+        
         $winTemplate: $("#win-template"),
         $gameBoard: $("#game-board"),
         $gameWinner: $("#game-winner"),
@@ -28,22 +26,16 @@ define([
       function initVars () {
         self.defaults = defaults;
         self.options = $.extend({}, defaults, config);
-        self.$gameBoardTemplate = self.options.$gameBoardTemplate;
+        
         self.$winTemplate = self.options.$winTemplate;
         self.$gameBoard = self.options.$gameBoard;
         self.$gameWinner = self.options.$gameWinner;
         self.$winner = self.options.$winner;
-        self.gameBoardSquares = "";
         self.playerWins = "";
       }
 
       function setBinds () {
-        self.$gameBoard.on("generateBoardTemplate", function () {
-          self.generateBoardTemplate.apply(self, arguments);
-        });
-        self.$gameBoard.on("renderEmptyBoard", function () {
-          self.renderEmptyBoard.apply(self, arguments);
-        });
+        
         self.$gameWinner.on("hidePlayerWins", function () {
           self.hideWinEvent.apply(self, arguments);
         });
@@ -63,7 +55,6 @@ define([
     var that = Pres;
 
     function initVars () {
-      that.boardConfig = BoardConfig;
       that.PLAYER_X = {
         src: "img/player-x.png",
         alt: "Player X",
@@ -94,29 +85,6 @@ define([
     initVars();
     initMethods();
   })();
-
-  Pres.prototype.generateBoardTemplate = function () {
-    var 
-      self = this,
-      that = Pres,
-      renderGameSquare;
-
-    renderGameSquare = (function () {
-      var 
-        gameBoardTemplate = self.$gameBoardTemplate.html(),
-        squareTemplate = _.template(gameBoardTemplate);
-
-      return squareTemplate;
-    }());
-
-    _.each(that.boardConfig, function (conf) {
-      self.gameBoardSquares += renderGameSquare(conf);
-    });
-  };
-  
-  Pres.prototype.renderEmptyBoard = function () {
-    this.$gameBoard.empty().html(this.gameBoardSquares);
-  };
 
   Pres.prototype.renderWinEvent = function (e, opts) {
     /* REFACTOR !

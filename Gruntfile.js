@@ -74,9 +74,6 @@ module.exports = function(grunt) {
           command += "&& echo removing out...";
           command += "&& rm -rf out ";
           command += "&& echo removed out";
-          command += "&& echo removing the bower folder...";
-          command += "&& rm -rf src/files/lib/bower ";
-          command += "&& echo removed the bower folder";
           return command;
 
         }
