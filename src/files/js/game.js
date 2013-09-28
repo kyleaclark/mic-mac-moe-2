@@ -1,12 +1,17 @@
 define([
   "jquery",
   "js/BoardTemplate",
-  "js/BoardData"
+  "js/BoardData",
+  "js/WinValidation",
+  "js/PlayerTurn",
+
+  // Does not return useful object
+  "lib/modernizr.touchevents"
   /*
   "js/Win",
   "js/Turn"
   */
-], function ($, BoardTemplate, BoardData
+], function ($, BoardTemplate, BoardData, WinValidation, PlayerTurn
   /*
   Win,
   Turn
@@ -49,15 +54,12 @@ define([
       function initObjects () {
         self.boardTemplate = new BoardTemplate();
         self.boardData = new BoardData();
-        self.boardData.resetBoardData();
-        /*
-        self.validate = new Validate();
-        self.turn = new Turn();
-        */
+        self.winValidation = new WinValidation();
+        self.playerTurn = new PlayerTurn({}, self.boardData);
       }
 
       function initGameBoard () {
-        
+        //self.boardData.resetBoardData();
       }
 
       function setBinds () {
@@ -80,18 +82,17 @@ define([
     init();
   }
 
-  Game.prototype.newGame = function () {
-    this.pres.renderBoardTemplate();
-    this.$gameBoard.trigger("renderBoardTemplate");
+  Game.prototype.prepare = function () {
+    this.boardTemplate.generate();
   };
 
-  Game.prototype.resetGame = function () {
+  Game.prototype.startNew = function () {
     /*
     this.board.resetBoardData();
     this.turn.resetTurnData();
     this.$gameWinner.trigger("hidePlayerWins");
     */
-    this.newGame();
+    this.boardTemplate.render();
   }
 
   return Game;

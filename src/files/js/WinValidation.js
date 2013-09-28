@@ -7,7 +7,7 @@ define([
 ) {
   "use strict";
 
-  function Validate () {
+  function WinValidation (config) {
     var
       self = this,
       defaults = {};
@@ -31,7 +31,7 @@ define([
   }
 
   (function initStatic () {
-    var that = Validate;
+    var that = WinValidation;
 
     function initVars () {
       that.MATRIX_ROWS = 5;
@@ -42,7 +42,7 @@ define([
     initVars();
   })();
 
-  Validate.isSquarePlayer = function (row, col) {
+  WinValidation.isSquarePlayer = function (row, col) {
     index = (row * MATRIX_ROWS) + col;
 
     if (_board.getPlayerByIndex(index) === player) {
@@ -52,9 +52,9 @@ define([
     return false;
   };
 
-  Validate.checkVerticalWin = function (row, col) {
+  WinValidation.checkVerticalWin = function (row, col) {
     var
-      that = Validate,
+      that = WinValidation,
       isSquarePlayer = that.isSquarePlayer();
 
     if (isSquarePlayer(row.upOne, col) 
@@ -68,9 +68,9 @@ define([
   }
 
   // Check Horizontal Win
-  Validate.checkHorizontalWin = function (row, col) {
+  WinValidation.checkHorizontalWin = function (row, col) {
     var
-      that = Validate,
+      that = WinValidation,
       isSquarePlayer = that.isSquarePlayer();
 
     if (isSquarePlayer(row, cols.leftOne) 
@@ -83,8 +83,8 @@ define([
     return false;
   }
 
-  Validate.checkDiagnolWin = function () {
-    var that = Validate;
+  WinValidation.checkDiagnolWin = function () {
+    var that = WinValidation;
 
     if (that.checkDiagnolUpLeft() || that.checkDiagnolDownLeft() || that.checkDiagnolUpRight() || that.checkDiagnolDownRight()) {
       return true;
@@ -93,9 +93,9 @@ define([
     return false;
   };
 
-  Validate.checkDiagnolUpLeft = function (row, col) {
+  WinValidation.checkDiagnolUpLeft = function (row, col) {
     var
-      that = Validate,
+      that = WinValidation,
       isSquarePlayer = that.isSquarePlayer();
 
     if (isSquarePlayer(row.upOne, col.leftOne) 
@@ -106,9 +106,9 @@ define([
     return false;
   };
 
-  Validate.checkDiagnolDownLeft = function (row, col) {
+  WinValidation.checkDiagnolDownLeft = function (row, col) {
     var
-      that = Validate,
+      that = WinValidation,
       isSquarePlayer = that.isSquarePlayer();
 
     if (isSquarePlayer(row.downOne, col.leftOne) 
@@ -119,9 +119,9 @@ define([
     return false;
   };
 
-  Validate.checkDiagnolUpRight = function (row, col) {
+  WinValidation.checkDiagnolUpRight = function (row, col) {
     var
-      that = Validate,
+      that = WinValidation,
       isSquarePlayer = that.isSquarePlayer();
 
     if (isSquarePlayer(row.upOne, col.rightOne) 
@@ -132,9 +132,9 @@ define([
     return false;
   };
 
-  Validate.checkDiagnolDownRight = function  (row, col) {
+  WinValidation.checkDiagnolDownRight = function  (row, col) {
     var
-      that = Validate,
+      that = WinValidation,
       isSquarePlayer = that.isSquarePlayer();
 
     if (isSquarePlayer(row.downOne, col.rightOne) 
@@ -145,7 +145,7 @@ define([
     return false;
   };
 
-  Validate.prototype.isWin = function (square) {
+  WinValidation.prototype.isWin = function (square) {
     setCheckIsWinVars(square);
 
     if (checkVerticalWin()) {
@@ -159,7 +159,7 @@ define([
     return false;
   };
 
-  Validate.prototype.setCheckIsWinVars = function (square) {
+  WinValidation.prototype.setCheckIsWinVars = function (square) {
     this.player = this.Turn.getTurn();
     this.index = this.Board.getIndexBySquare(square);
     this.row = this.Board.getRowByIndex(index);
@@ -178,10 +178,10 @@ define([
     };
   };
 
-  Validate.prototype.setWinner = function (player) {
+  WinValidation.prototype.setWinner = function (player) {
     this.$gameWinner.trigger("renderPlayerWins", {"player" : player});
   };
 
-  return Win;
+  return WinValidation;
 
 });

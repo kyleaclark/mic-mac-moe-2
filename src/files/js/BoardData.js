@@ -83,33 +83,18 @@ define([
   };
 
   BoardData.prototype.getPlayerOfSquare = function (squareEl) {
-    return thisboardData[squareEl].player;
+    console.log("squareEl : ", squareEl);
+    console.log("this.boardData : ", this.boardData);
+    return this.boardData[squareEl].player;
   };
 
   BoardData.prototype.getRowOfSquare = function (squareEl) {
-    return boardData[squareEl].row;
+    return this.boardData[squareEl].row;
   };
 
   BoardData.prototype.getColOfSquare = function (squareEl) {
-    return boardData[squareEl].col;
+    return this.boardData[squareEl].col;
   };
-
-  /*
-  Board.prototype.getPlayerByIndex = function (index) {
-    if (boardData[index]) {
-      return boardData[index].player;
-    }
-    return false;
-  };
-
-  Board.prototype.getRowByIndex = function (index) {
-    return boardData[index].row;
-  };
-
-  Board.prototype.getColByIndex = function (index) {
-    return boardData[index].col;
-  };
-  */
 
   BoardData.prototype.setPlayerBySquare = function (squareEl, player) {
     this.boardData[squareEl].player = player;

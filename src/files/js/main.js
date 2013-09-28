@@ -4,7 +4,14 @@ define([
 ], function ($, Game) {
   "use strict";
 
-  var NS = window.NS || {};
+  var NS;
+
+   // Global Constants
+  (function initGlobalConstants () {
+    window.NS = window.NS || {};
+    window.NS.CLICK = Modernizr.touch ? "touchend" : "click";
+    NS = window.NS;
+  })();
 
   // Main program object on window
   NS.Main = function Main (config) {
@@ -27,6 +34,8 @@ define([
     // Initialize Game object
     self.initGame = function () {
       self.game = new Game();
+      self.game.prepare();
+      self.game.startNew();
     };
   };
 

@@ -23,7 +23,6 @@ define([
     function init () {
 
       function initConstants () {
-        self.boardConfig = BoardConfig;
         self.EMPTY = "";
       }
 
@@ -32,25 +31,34 @@ define([
         self.options = $.extend({}, defaults, config);
         self.$gameBoard = self.options.$gameBoard;
         self.$gameBoardTemplate = self.options.$gameBoardTemplate;
+
+        self.gameBoardSquares = "";
+      }
+
+      function initObjects () {
+        self.boardConfig = BoardConfig;
       }
 
       function setBinds () {
+        /*
         self.$gameBoard.on("generateBoardTemplate", function () {
           self.generateBoardTemplate.apply(self, arguments);
         });
+        */
         self.$gameBoard.on("renderEmptyBoard", function () {
           self.renderEmptyBoard.apply(self, arguments);
         });
       }
 
       initConstants();
+      initObjects();
       initVars();
     }
 
     init();
   }
 
-  BoardTemplate.prototype.generateBoardTemplate = function () {
+  BoardTemplate.prototype.generate = function () {
     var 
       self = this,
       renderGameSquare;
@@ -63,12 +71,12 @@ define([
       return squareTemplate;
     }());
 
-    _.each(self.boardConfig, function (conf) {
+    _.each(this.boardConfig, function (conf) {
       self.gameBoardSquares += renderGameSquare(conf);
     });
   };
   
-  BoardTemplate.prototype.renderEmptyBoard = function () {
+  BoardTemplate.prototype.render = function () {
     this.$gameBoard.empty().html(this.gameBoardSquares);
   };
 
