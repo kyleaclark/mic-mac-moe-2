@@ -1,16 +1,15 @@
 define([
   "jquery",
+  "js/utils/Globals",
+  "js/utils/PubSub",
   "js/Game"
-], function (
-  $,
-  Game
-) {
+], function ($, Globals, PubSub, Game) {
   "use strict";
 
   /**
   * PlayerTurn class constructor
   */
-  function PlayerTurn (config, BoardData) {
+  function PlayerTurn (config, BoardData, PubSub) {
     var 
       self = this,
       defaults = {
@@ -21,10 +20,10 @@ define([
       // Initialize instance
       function init () {
 
-        // Global constants
-        function initConstants () {
-          var NS = window.NS;
-          NS.CLICK = window.NS.CLICK;
+        // Global variables
+        function initGlobals () {
+          self.CLICK = Globals.CLICK;
+          self.winValidationEvent = Globals.validateWinEvent;
         }
 
         // Instance variables
@@ -52,12 +51,12 @@ define([
 
         // Event binds
         function setBinds () {
-          self.$boardID.on(NS.CLICK, function (event) {
+          self.$boardID.on(self.CLICK, function (event) {
             self.onClickEvent(event);
           });
         }
 
-        initConstants();
+        initGlobals();
         initVars();
         initObjects();
         setBinds();
@@ -66,11 +65,25 @@ define([
     init();
   }
 
+  (function initStaticVars () {
+    var that = PlayerTurn;
+
+    that.PLAYER_X = {
+      src: "images/player-x.png",
+      alt: "Player X",
+    };
+    that.PLAYER_O = {
+      src: "images/player-o.png",
+      alt: "Player O",
+    };
+    that.X = "X";
+    that.O = "O";
+  })();
+
   /**
   * Validate player turn
   */
   PlayerTurn.prototype.validate = function (square) {
-    console.log("square : ", square);
     var playerOfSquare = this.BoardData.getPlayerOfSquare(square);
 
     // Is valid if square is in an empty board square
@@ -89,10 +102,16 @@ define([
   };
 
   /**
-  * Set value of next playerTurn
+  * Set value of next player turn (opposite of current player turn)
   */
   PlayerTurn.prototype.setPlayerTurn = function (player) {
-    this.playerTurn = player;
+    var that = PlayerTurn;
+
+    if (player === that.X) {
+      this.playerTurn = that.O;
+    } else {
+      this.playerTurn = that.X;
+    }
   };
 
   /**
@@ -119,13 +138,12 @@ define([
 
     if (this.validate(square)) {
       this.render(playerTurn, square);
-      //this.Pres.renderTurn(player, square);
-      //this.Board.setPlayerBySquare(player, square);
 
       if (this.numberOfTurns > 3) {
-        //this.Validate.isWin(square);
+        PubSub.publish("validateWinEvent");
       }
 
+      this.setPlayerTurn(playerTurn);
       this.setNumberOfTurns(this.TURN_INCREMENT);
     }
   }
@@ -135,12 +153,17 @@ define([
   */
   PlayerTurn.prototype.render = function (player, square) {
     var 
+      that = PlayerTurn,
+      squareId = "#" + square,
       TURN_FADEIN = 300,
       playerEl = "<img>";
 
-    $(playerEl, player).fadeIn(TURN_FADEIN).appendTo(square);
+    if (player === that.X) {
+      $(playerEl, that.PLAYER_X).fadeIn(TURN_FADEIN).appendTo(squareId);
+    } else {
+      $(playerEl, that.PLAYER_O).fadeIn(TURN_FADEIN).appendTo(squareId);
+    }
   };
 
   return PlayerTurn;
-
 });

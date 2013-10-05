@@ -4,16 +4,11 @@ define([
 ], function ($, Game) {
   "use strict";
 
-  var NS;
+  window.NS = window.NS || {};
 
-   // Global Constants
-  (function initGlobalConstants () {
-    window.NS = window.NS || {};
-    window.NS.CLICK = Modernizr.touch ? "touchend" : "click";
-    NS = window.NS;
-  })();
+  var NS = window.NS;
 
-  // Main program object on window
+  // Main program object
   NS.Main = function Main (config) {
     var 
       self = this,

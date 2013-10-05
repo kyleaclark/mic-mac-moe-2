@@ -1,22 +1,11 @@
 define([
   "jquery",
+  "js/utils/Globals",
   "js/BoardTemplate",
   "js/BoardData",
   "js/WinValidation",
-  "js/PlayerTurn",
-
-  // Does not return useful object
-  "lib/modernizr.touchevents"
-  /*
-  "js/Win",
-  "js/Turn"
-  */
-], function ($, BoardTemplate, BoardData, WinValidation, PlayerTurn
-  /*
-  Win,
-  Turn
-  */
-) {
+  "js/PlayerTurn"
+], function ($, Globals, BoardTemplate, BoardData, WinValidation, PlayerTurn) {
   "use strict";  
 
   function Game (config) {
@@ -30,25 +19,16 @@ define([
 
     function init () {
 
+      function initGlobals () {
+        self.CLICK = Globals.CLICK;
+      }
+
       function initVars () {
         self.defaults = defaults;
         self.options = $.extend({}, defaults, config);
         self.$gameBoard = self.options.$gameBoard;
         self.$gameWinner = self.options.$gameWinner;
         self.$playAgain = self.options.$playAgain;
-        /*
-        _board = {
-          resetBoardData : NS.board._m.resetBoardData
-        };
-
-        _pres = {
-          hideWin : NS.pres._m.hideWin
-        };
-
-        _storeTurn = {
-          init : NS.storeTurn._m.init
-        };
-        */
       }
 
       function initObjects () {
@@ -63,20 +43,16 @@ define([
       }
 
       function setBinds () {
-        self.$playAgain.on("click", function () {
+        self.$playAgain.on(self.CLICK, function () {
           self.resetGame.apply(self, arguments);
         });
       }
-
-      function createGlobalSelf () {
-        //NS.Game = self;
-      }
   
+      initGlobals();
       initVars();
       initObjects();
       initGameBoard();
       setBinds();
-      createGlobalSelf();
     }
 
     init();

@@ -1,10 +1,9 @@
 define([
   "jquery",
+  "js/utils/Globals",
+  "js/utils/PubSub",
   "js/Game"
-], function (
-  $,
-  Game
-) {
+], function ($, Globals, PubSub, Game) {
   "use strict";
 
   function WinValidation (config) {
@@ -20,11 +19,19 @@ define([
       }
 
       function initObjects () {
-        self.Board = NS.Board;
-        self.Turn = NS.Turn;
+        //self.Board = NS.Board;
+        //self.Turn = NS.Turn;
+      }
+
+      function setBinds () {
+        PubSub.subscribe("validateWinEvent", function () {
+          console.log("inside function");
+          self.validateWin();
+        });
       }
 
       initVars();
+      setBinds();
     }
 
     init();
@@ -42,6 +49,11 @@ define([
     initVars();
   })();
 
+  WinValidation.prototype.validateWin = function () {
+    console.log("validateWin");
+  };
+
+  /*
   WinValidation.isSquarePlayer = function (row, col) {
     index = (row * MATRIX_ROWS) + col;
 
@@ -181,6 +193,7 @@ define([
   WinValidation.prototype.setWinner = function (player) {
     this.$gameWinner.trigger("renderPlayerWins", {"player" : player});
   };
+  */
 
   return WinValidation;
 
