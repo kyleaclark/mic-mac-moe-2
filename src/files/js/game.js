@@ -34,7 +34,7 @@ define([
       function initObjects () {
         self.boardTemplate = new BoardTemplate();
         self.boardData = new BoardData();
-        self.winValidation = new WinValidation();
+        self.winValidation = new WinValidation({}, self.boardData);
         self.playerTurn = new PlayerTurn({}, self.boardData);
       }
 

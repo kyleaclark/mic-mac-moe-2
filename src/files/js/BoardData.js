@@ -30,33 +30,28 @@ define([
         // Self-contained variables
         self.boardElems = "";
         self.boardData = [];
-        /*
-        _pres = {
-          renderGameBoardSquares : NS.pres._m.renderGameBoardSquares
-        };
-        */
       }
 
       function prepare () {
         var 
           boardSquareObj,
           index,
-          squareEl,
+          square,
           i,
           j;
 
         for (i = 0; i < self.MATRIX_ROWS; i++) {
           for (j = 0; j < self.MATRIX_COLS; j++) {
             index = i+j;
-            squareEl = "sq-" + i + "-" + j;
+            square = "sq-" + i + "-" + j;
             boardSquareObj = {
               index: index,
               row: i,
               col: j,
-              el: squareEl,
+              el: square,
               player: ""
             };
-            self.boardData[squareEl] = boardSquareObj;
+            self.boardData[square] = boardSquareObj;
           }
         }
       }
@@ -69,8 +64,8 @@ define([
     init();
   }
 
-  BoardData.prototype.getIndexOfSquare = function (squareEl) {
-    return this.boardData[squareEl].index;
+  BoardData.prototype.getIndexOfSquare = function (square) {
+    return this.boardData[square].index;
     /*
     for (i = 0; i < MAX; i++) {
       if (this.boardData[i].square === square) {
@@ -82,22 +77,20 @@ define([
     //index = (row * MATRIX_ROWS) + col;
   };
 
-  BoardData.prototype.getPlayerOfSquare = function (squareEl) {
-    console.log("squareEl : ", squareEl);
-    console.log("this.boardData : ", this.boardData);
-    return this.boardData[squareEl].player;
+  BoardData.prototype.getPlayerOfSquare = function (square) {
+    return this.boardData[square].player;
   };
 
-  BoardData.prototype.getRowOfSquare = function (squareEl) {
-    return this.boardData[squareEl].row;
+  BoardData.prototype.setPlayerOfSquare = function (square, player) {
+    this.boardData[square].player = player;
   };
 
-  BoardData.prototype.getColOfSquare = function (squareEl) {
-    return this.boardData[squareEl].col;
+  BoardData.prototype.getRowOfSquare = function (square) {
+    return this.boardData[square].row;
   };
 
-  BoardData.prototype.setPlayerBySquare = function (squareEl, player) {
-    this.boardData[squareEl].player = player;
+  BoardData.prototype.getColOfSquare = function (square) {
+    return this.boardData[square].col;
   };
 
   BoardData.prototype.resetBoardData = function () {

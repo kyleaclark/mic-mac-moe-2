@@ -140,7 +140,7 @@ define([
       this.render(playerTurn, square);
 
       if (this.numberOfTurns > 3) {
-        PubSub.publish("validateWinEvent");
+        PubSub.publish("validateWinEvent", [square, playerTurn]);
       }
 
       this.setPlayerTurn(playerTurn);

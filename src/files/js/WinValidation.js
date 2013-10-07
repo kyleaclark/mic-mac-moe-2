@@ -6,7 +6,7 @@ define([
 ], function ($, Globals, PubSub, Game) {
   "use strict";
 
-  function WinValidation (config) {
+  function WinValidation (config, BoardData) {
     var
       self = this,
       defaults = {};
@@ -16,17 +16,25 @@ define([
       function initVars () {
         self.defaults = defaults;
         self.options = $.extend({}, defaults, config);
+
+        self.row = 0;
+        self.col = 0;
+        self.rowGroup = {};
+        self.colGroup = {};
       }
 
       function initObjects () {
-        //self.Board = NS.Board;
-        //self.Turn = NS.Turn;
+        self.BoardData = BoardData;
+      }
+
+      function initObjectMethods () {
+        self.getRowOfSquare = self.BoardData.getRowOfSquare;
+        self.getColOfSquare = self.BoardData.getColOfSquare;
       }
 
       function setBinds () {
-        PubSub.subscribe("validateWinEvent", function () {
-          console.log("inside function");
-          self.validateWin();
+        PubSub.subscribe("validateWinEvent", function (ev, square, player) {
+          self.validateWin(square, player);
         });
       }
 
@@ -49,11 +57,93 @@ define([
     initVars();
   })();
 
-  WinValidation.prototype.validateWin = function () {
-    console.log("validateWin");
+  /**
+  * Instance - Getters & Setters
+  */
+
+  /* Get .row */
+  WinValidation.prototype.getRow = function () {
+    return this.row;
   };
 
-  /*
+  /* Set .row */
+  WinValidation.prototype.setRow = function (square) {
+    this.row = this.getRowOfSquare(square);
+  };
+
+  /* Get .col */
+  WinValidation.prototype.getCol = function () {
+    return this.col;
+  };
+
+  /* Set .col */
+  WinValidation.prototype.setCol = function (square) {
+    this.col = this.getColOfSquare(square);
+  };
+
+  /* Get .rowGroup */
+  WinValidation.prototype.getRowGroup = function () {
+    return this.rowGroup;
+  };
+
+  /* Set .rowGroup */
+  WinValidation.prototype.setRowGroup = function () {
+    var 
+      that = WinValidation,
+      row = this.getRow();
+
+    this.rowGroup = {
+      upOne: row - that.ONE,
+      upTwo: row - that.TWO,
+      downOne: row + that.ONE,
+      downTwo: row + that.TWO
+    };
+  };
+
+  /* Get .colGroup */
+  WinValidation.prototype.getColGroup = function () {
+    return this.colGroup;
+  };
+
+  /* Set .colGroup */
+  WinValidation.prototype.setColGroup = function () {
+    var 
+      that = WinValidation,
+      col = this.getCol();
+
+    this.colGroup = {
+      leftOne: col - that.ONE,
+      leftTwo: col - that.TWO,
+      rightOne: col + that.ONE,
+      rightTwo: col + that.TWO
+    };
+  };
+
+  WinValidation.prototype.validateWin = function (square, player) {
+    this.updateValidationVars();
+
+    if (checkVerticalWin(row, col)) {
+      this.setWinner(player);
+    } else  if (checkHorizontalWin(row, col)) {
+      this.setWinner(player);
+    } else if (checkDiagnolWin(row, col)) {
+      this.setWinner(player);
+    }
+    
+    return false;
+  };
+
+  WinValidation.prototype.updateValidationVars = function (square) {
+    /*
+    this.player = this.Turn.getTurn();
+    this.index = this.Board.getIndexBySquare(square);
+    */
+    this.setRow(square);
+    this.setCol(square);
+    this.setRowGroup();
+    this.setColGroup();
+  };
+
   WinValidation.isSquarePlayer = function (row, col) {
     index = (row * MATRIX_ROWS) + col;
 
@@ -157,43 +247,9 @@ define([
     return false;
   };
 
-  WinValidation.prototype.isWin = function (square) {
-    setCheckIsWinVars(square);
-
-    if (checkVerticalWin()) {
-      this.setWinner(player);
-    } else  if (checkHorizontalWin()) {
-      this.setWinner(player);
-    } else if (checkDiagnolWin()) {
-      this.setWinner(player);
-    }
-    
-    return false;
-  };
-
-  WinValidation.prototype.setCheckIsWinVars = function (square) {
-    this.player = this.Turn.getTurn();
-    this.index = this.Board.getIndexBySquare(square);
-    this.row = this.Board.getRowByIndex(index);
-    this.col = this.Board.getColByIndex(index);
-    this.rows = {
-      upOne: this.row - that.ONE,
-      upTwo: this.row - TWO,
-      downOne: this.row + ONE,
-      downTwo: row + TWO
-    };
-    this.cols = {
-      leftOne: col - ONE,
-      leftTwo: col - TWO,
-      rightOne: col + ONE,
-      rightTwo: col + TWO
-    };
-  };
-
   WinValidation.prototype.setWinner = function (player) {
     this.$gameWinner.trigger("renderPlayerWins", {"player" : player});
   };
-  */
 
   return WinValidation;
 
