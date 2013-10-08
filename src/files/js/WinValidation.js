@@ -17,19 +17,16 @@ define([
         self.defaults = defaults;
         self.options = $.extend({}, defaults, config);
 
+        self.index = 0;
         self.row = 0;
         self.col = 0;
         self.rowGroup = {};
         self.colGroup = {};
+        self.player = "";
       }
 
       function initObjects () {
         self.BoardData = BoardData;
-      }
-
-      function initObjectMethods () {
-        self.getRowOfSquare = self.BoardData.getRowOfSquare;
-        self.getColOfSquare = self.BoardData.getColOfSquare;
       }
 
       function setBinds () {
@@ -39,6 +36,7 @@ define([
       }
 
       initVars();
+      initObjects();
       setBinds();
     }
 
@@ -61,6 +59,16 @@ define([
   * Instance - Getters & Setters
   */
 
+  /* Get .index */
+  WinValidation.prototype.getIndex = function () {
+    return this.index;
+  };
+
+  /* Get .index */
+  WinValidation.prototype.setIndex = function (square) {
+    this.index = this.BoardData.getIndexOfSquare(square);
+  };
+
   /* Get .row */
   WinValidation.prototype.getRow = function () {
     return this.row;
@@ -68,7 +76,7 @@ define([
 
   /* Set .row */
   WinValidation.prototype.setRow = function (square) {
-    this.row = this.getRowOfSquare(square);
+    this.row = this.BoardData.getRowOfSquare(square);
   };
 
   /* Get .col */
@@ -78,7 +86,7 @@ define([
 
   /* Set .col */
   WinValidation.prototype.setCol = function (square) {
-    this.col = this.getColOfSquare(square);
+    this.col = this.BoardData.getColOfSquare(square);
   };
 
   /* Get .rowGroup */
@@ -87,10 +95,8 @@ define([
   };
 
   /* Set .rowGroup */
-  WinValidation.prototype.setRowGroup = function () {
-    var 
-      that = WinValidation,
-      row = this.getRow();
+  WinValidation.prototype.setRowGroup = function (row) {
+    var that = WinValidation;
 
     this.rowGroup = {
       upOne: row - that.ONE,
@@ -106,10 +112,8 @@ define([
   };
 
   /* Set .colGroup */
-  WinValidation.prototype.setColGroup = function () {
-    var 
-      that = WinValidation,
-      col = this.getCol();
+  WinValidation.prototype.setColGroup = function (col) {
+    var that = WinValidation;
 
     this.colGroup = {
       leftOne: col - that.ONE,
@@ -119,14 +123,40 @@ define([
     };
   };
 
-  WinValidation.prototype.validateWin = function (square, player) {
-    this.updateValidationVars();
+  /* Set .col */
+  WinValidation.prototype.getPlayer = function (square) {
+    return this.player;
+  };
 
-    if (checkVerticalWin(row, col)) {
+  /* Set .col */
+  WinValidation.prototype.setPlayer = function (square) {
+    this.player = this.BoardData.getPlayerOfSquare(square);
+  };
+
+  /* Get .col */
+  WinValidation.prototype.getPlayerOfSquare = function (square) {
+    return this.BoardData.getPlayerOfSquare(square);
+  };
+
+  /* Get .square */
+  WinValidation.prototype.getSquareOfRowCol= function (row, col) {
+    return this.BoardData.procureSquareString(row, col);
+  };
+
+  WinValidation.prototype.validateWin = function (square, player) {
+    var
+      row,
+      col;
+
+    this.updateValidationVars(square);
+    row = this.getRow();
+    col = this.getCol();
+
+    if (this.checkVerticalWin(row, col)) {
       this.setWinner(player);
-    } else  if (checkHorizontalWin(row, col)) {
+    } else  if (this.checkHorizontalWin(row, col)) {
       this.setWinner(player);
-    } else if (checkDiagnolWin(row, col)) {
+    } else if (this.checkDiagnolWin(row, col)) {
       this.setWinner(player);
     }
     
@@ -138,16 +168,20 @@ define([
     this.player = this.Turn.getTurn();
     this.index = this.Board.getIndexBySquare(square);
     */
+    var 
+      row = this.getRow(),
+      col = this.getCol();
+
     this.setRow(square);
     this.setCol(square);
-    this.setRowGroup();
-    this.setColGroup();
+    this.setRowGroup(row);
+    this.setColGroup(col);
   };
 
-  WinValidation.isSquarePlayer = function (row, col) {
-    index = (row * MATRIX_ROWS) + col;
+  WinValidation.prototype.isSquarePlayer = function (row, col) {
+    var square = this.getSquareOfRowCol(row, col);
 
-    if (_board.getPlayerByIndex(index) === player) {
+    if (this.getPlayerOfSquare(square) === this.getPlayer()) {
       return true;
     }
 
@@ -155,11 +189,11 @@ define([
   };
 
   WinValidation.checkVerticalWin = function (row, col) {
-    var
-      that = WinValidation,
-      isSquarePlayer = that.isSquarePlayer();
+    var 
+      rowGroup = this.getRowGroup(),
+      colGroup = this.getColGroup();
 
-    if (isSquarePlayer(row.upOne, col) 
+    if (isSquarePlayer(row.upOne, col)
       && (isSquarePlayer(row.upTwo, col) || isSquarePlayer(row.downOne, col))) {
         return true;
     } else if (isSquarePlayer(row.downOne, col) && isSquarePlayer(row.downTwo, col)) {

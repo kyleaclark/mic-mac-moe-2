@@ -12,6 +12,7 @@ define([
   function BoardData (config) {
     var
       self = this,
+      that = BoardData,
       defaults = {};
 
     function init () {
@@ -34,23 +35,15 @@ define([
 
       function prepare () {
         var 
+          row,
+          col,
           boardSquareObj,
-          index,
-          square,
-          i,
-          j;
+          square;
 
-        for (i = 0; i < self.MATRIX_ROWS; i++) {
-          for (j = 0; j < self.MATRIX_COLS; j++) {
-            index = i+j;
-            square = "sq-" + i + "-" + j;
-            boardSquareObj = {
-              index: index,
-              row: i,
-              col: j,
-              el: square,
-              player: ""
-            };
+        for (row = 0; row < self.MATRIX_ROWS; row++) {
+          for (col = 0; col < self.MATRIX_COLS; col++) {
+            boardSquareObj = that.procureBoardSquareObj(row, col);
+            square = boardSquareObj.el;
             self.boardData[square] = boardSquareObj;
           }
         }
@@ -64,17 +57,32 @@ define([
     init();
   }
 
+  (function initStaticVars () {
+    var that = BoardData;
+
+    that.procureBoardSquareObj = function (row, col) {
+      var
+        index = row + col,
+        square = that.procureSquareString(row, col),
+        boardSquareObj = {
+          index: index,
+          row: row,
+          col: col,
+          el: square,
+          player: ""
+        };
+
+      return boardSquareObj;
+    };
+
+    that.procureSquareString = function (row, col) {
+      return "sq-" + row + "-" + col;
+    };
+
+  })();
+
   BoardData.prototype.getIndexOfSquare = function (square) {
     return this.boardData[square].index;
-    /*
-    for (i = 0; i < MAX; i++) {
-      if (this.boardData[i].square === square) {
-        return i;
-      }
-    }
-    return false;
-    */
-    //index = (row * MATRIX_ROWS) + col;
   };
 
   BoardData.prototype.getPlayerOfSquare = function (square) {
