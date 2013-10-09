@@ -33,6 +33,10 @@ define([
         self.boardData = [];
       }
 
+      function initObjects () {
+        self.Class = BoardData;
+      }
+
       function prepare () {
         var 
           row,
@@ -51,6 +55,7 @@ define([
 
       initConstants();
       initVars();
+      initObjects()
       prepare();
     }
 
@@ -99,6 +104,12 @@ define([
 
   BoardData.prototype.getColOfSquare = function (square) {
     return this.boardData[square].col;
+  };
+
+  BoardData.prototype.getSquareOfRowCol = function (row, col) {
+    var that = this.Class;
+
+    return that.procureSquareString(row, col);
   };
 
   BoardData.prototype.resetBoardData = function () {
