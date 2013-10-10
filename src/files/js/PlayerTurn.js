@@ -9,9 +9,10 @@ define([
   /**
   * PlayerTurn class constructor
   */
-  function PlayerTurn (config, BoardData, PubSub) {
+  function PlayerTurn (config, BoardData) {
     var 
       self = this,
+      that = PlayerTurn,
       defaults = {
         gameBoard: "game-board",
         resetGame: true
@@ -23,7 +24,8 @@ define([
         // Global variables
         function initGlobals () {
           self.CLICK = Globals.CLICK;
-          self.winValidationEvent = Globals.validateWinEvent;
+          self.SET_TURN_EVENT = Globals.SET_TURN_EVENT;
+          self.VALIDATE_WIN_EVENT = Globals.VALIDATE_WIN_EVENT;
         }
 
         // Instance variables
@@ -39,13 +41,15 @@ define([
 
           // Variables
           self.$boardID = $("#" + self.gameBoard);
-          self.playerTurn = "X";
+          self.player = "X";
           self.numberOfTurns = 0;
           self.turnSquare = "";
         }
 
         // Instance objects
         function initObjects () {
+          self.Class = that;
+          self.PubSub = PubSub;
           self.BoardData = BoardData;
         }
 
@@ -84,7 +88,7 @@ define([
   * Validate player turn
   */
   PlayerTurn.prototype.validate = function (square) {
-    var playerOfSquare = this.BoardData.getPlayerOfSquare(square);
+    var playerOfSquare = this.getPlayerOfSquare(square);
 
     // Is valid if square is in an empty board square
     if (square !== this.gameBoard && playerOfSquare === this.EMPTY) {
@@ -95,30 +99,37 @@ define([
   }
     
   /**
-  * Return value of current playerTurn
+  * Return value of current player turn
   */
-  PlayerTurn.prototype.getPlayerTurn = function () {
-    return this.playerTurn;
+  PlayerTurn.prototype.getPlayer = function () {
+    return this.player;
   };
 
   /**
   * Set value of next player turn (opposite of current player turn)
   */
-  PlayerTurn.prototype.setPlayerTurn = function (player) {
-    var that = PlayerTurn;
+  PlayerTurn.prototype.setPlayer = function (val) {
+    var that = this.Class;
 
-    if (player === that.X) {
-      this.playerTurn = that.O;
+    if (val === that.X) {
+      this.player = that.O;
     } else {
-      this.playerTurn = that.X;
+      this.player = that.X;
     }
+  };
+
+  /**
+  * Get player value of square
+  */
+  PlayerTurn.prototype.getPlayerOfSquare = function (square) {
+    return this.BoardData.getPlayerOfSquare(square);
   };
 
   /**
   * Add 1 to value of numberOfTurns
   */
-  PlayerTurn.prototype.setNumberOfTurns = function (addTurn) {
-    this.numberOfTurns += addTurn;
+  PlayerTurn.prototype.setNumberOfTurns = function (val) {
+    this.numberOfTurns += val;
   };
 
   /**
@@ -134,17 +145,18 @@ define([
   PlayerTurn.prototype.onClickEvent = function (event) {
     var 
       square = event.target.id,
-      playerTurn = this.getPlayerTurn();
+      player = this.getPlayer();
 
     if (this.validate(square)) {
-      this.render(playerTurn, square);
+      this.render(player, square);
 
       if (this.numberOfTurns > 3) {
-        PubSub.publish("validateWinEvent", [square, playerTurn]);
+        PubSub.publish(this.VALIDATE_WIN_EVENT, [square, player]);
       }
 
-      this.setPlayerTurn(playerTurn);
+      this.setPlayer(player);
       this.setNumberOfTurns(this.TURN_INCREMENT);
+      this.PubSub.publish(this.SET_TURN_EVENT, [player, square]);
     }
   }
 

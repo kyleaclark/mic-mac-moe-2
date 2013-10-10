@@ -1,12 +1,11 @@
 define([
   "jquery",
+  "js/utils/Globals",
+  "js/utils/PubSub",
   "js/Game",
 
   "underscore"
-], function (
-  $,
-  Game
-) {
+], function ($, Globals, PubSub, Game) {
   "use strict";
 
   function BoardData (config) {
@@ -17,6 +16,10 @@ define([
 
     function init () {
 
+      function initGlobals () {
+        self.SET_TURN_EVENT = Globals.SET_TURN_EVENT;
+      }
+
       function initConstants () {
         self.MATRIX_ROWS = 5;
         self.MATRIX_COLS = 5;
@@ -25,16 +28,24 @@ define([
       }
 
       function initVars () {
+        // Options
         self.defaults = defaults;
         self.options = $.extend({}, defaults, config);
 
-        // Self-contained variables
+        // Variables
         self.boardElems = "";
         self.boardData = [];
       }
 
       function initObjects () {
         self.Class = BoardData;
+        self.PubSub = PubSub;
+      }
+
+      function setBinds () {
+        self.PubSub.subscribe(self.SET_TURN_EVENT, function (ev, player, square) {
+          self.setPlayerOfSquare(player, square);
+        });
       }
 
       function prepare () {
@@ -53,6 +64,7 @@ define([
         }
       }
 
+      initGlobals();
       initConstants();
       initVars();
       initObjects()
@@ -94,7 +106,7 @@ define([
     return this.boardData[square].player;
   };
 
-  BoardData.prototype.setPlayerOfSquare = function (square, player) {
+  BoardData.prototype.setPlayerOfSquare = function (player, square) {
     this.boardData[square].player = player;
   };
 

@@ -12,6 +12,10 @@ define([
 
     function init () {
 
+      function initGlobals () {
+        self.VALIDATE_WIN_EVENT = Globals.VALIDATE_WIN_EVENT;
+      }
+
       function initVars () {
         self.defaults = defaults;
         self.options = $.extend({}, defaults, config);
@@ -30,11 +34,12 @@ define([
       }
 
       function setBinds () {
-        PubSub.subscribe("validateWinEvent", function (ev, square, player) {
+        PubSub.subscribe(self.VALIDATE_WIN_EVENT, function (ev, square, player) {
           self.validate(square, player);
         });
       }
 
+      initGlobals();
       initVars();
       initObjects();
       setBinds();
@@ -59,28 +64,57 @@ define([
 
       /* Verify vertical, horizontal, and Diagonal win possibilities */
       sub.verify = function () {
-        if (sub.verifyVerticalWin.call(this, rowGroup, col)) {
-          return true;
-        } else if (sub.verifyHorizontalWin.call(this, row, colGroup)) {
+        //if (sub.verifyVerticalWin.call(this, rowGroup, col)) {
+          //return true;
+        if (sub.verifyHorizontalWin.call(this, row, colGroup)) {
           console.log("verify horizontal");
           return true;
-        } else if (sub.verifyDiagonalWin.call(this, rowGroup, colGroup)) {
+        } /*else if (sub.verifyDiagonalWin.call(this, rowGroup, colGroup)) {
+          return true;
+        }*/
+
+        return false;
+      };
+
+      sub.verifyValidSquare = function (row, col) {
+        if (row === that.MATRIX_ROWS || col === that.MATRIX_ROWS) {
+          return false;
+        } else if (row < 0 || col < 0) {
+          return false;
+        }
+
+        return true;
+      };
+
+      sub.verifyPlayerMatch = function (row, col) {
+        var square;
+
+        if (!self.verifyValidSquare(row, col)) {
+          return false;
+        }
+
+        square = this.getSquareOfRowCol(row, col);
+
+        console.log("square : ", square, " - ", this.getPlayerOfSquare(square), " - ", this.getPlayer());
+
+        if (this.getPlayerOfSquare.call(this, square) === this.getPlayer()) {
+          console.log("true");
           return true;
         }
+
+        console.log("false");
 
         return false;
       };
 
       /* Validate procedure subject method to verify vertical win */
       sub.verifyVerticalWin = function (row, col) {
-        var verifyPlayerMatch = this.verifyPlayerMatch;
+        var verifyPlayerMatch = self.verifyPlayerMatch;
 
         if (verifyPlayerMatch.call(this, row.upOne, col)
           && (verifyPlayerMatch.call(this, row.upTwo, col) || verifyPlayerMatch.call(this, row.downOne, col))) {
-            console.log("true 1");
             return true;
         } else if (verifyPlayerMatch.call(this, row.downOne, col) && verifyPlayerMatch.call(this, row.downTwo, col)) {
-          console.log("true 2");
             return true;
         }
 
@@ -89,13 +123,14 @@ define([
 
       /* Validate procedure subject method to verify horizontal win */
       sub.verifyHorizontalWin = function (row, col) {
-        console.log("verifyHorizontalWin");
-        var verifyPlayerMatch = this.verifyPlayerMatch;
+        var verifyPlayerMatch = self.verifyPlayerMatch;
 
-        if (verifyPlayerMatch.call(this, row, cols.leftOne) 
-          && (verifyPlayerMatch.call(this, row, cols.leftTwo) || verifyPlayerMatch.call(this, row, cols.rightOne))) {
+        console.log("ROW : ", row, " COL : ", col);
+
+        if (verifyPlayerMatch.call(this, row, col.leftOne) 
+          && (verifyPlayerMatch.call(this, row, col.leftTwo) || verifyPlayerMatch.call(this, row, col.rightOne))) {
             return true;
-        } else if (verifyPlayerMatch.call(this, row, cols.rightOne) && verifyPlayerMatch.call(this, row, cols.rightTwo)) {
+        } else if (verifyPlayerMatch.call(this, row, col.rightOne) && verifyPlayerMatch.call(this, row, col.rightTwo)) {
             return true;
         }
 
@@ -104,10 +139,10 @@ define([
 
       /* Validate procedure subject method to verify diagonal win */
       sub.verifyDiagonalWin = function (row, col) {
-       var verifyPlayerMatch = this.verifyPlayerMatch;
+       var verifyPlayerMatch = self.verifyPlayerMatch;
 
-        if (self.checkDiagonalUpLeft(row, col) || self.checkDiagonalDownLeft(row, col) 
-          || self.checkDiagonalUpRight(row, col) || self.checkDiagonalDownRight(row, col)) {
+        if (self.verifyDiagonalUpLeft(row, col) || self.verifyDiagonalDownLeft(row, col) 
+          || self.verifyDiagonalUpRight(row, col) || self.verifyDiagonalDownRight(row, col)) {
             return true;
         }
 
@@ -116,7 +151,7 @@ define([
 
       /* Validate procedure subject method to verify diagonal up-left win */
       sub.verifyDiagonalUpLeft = function (row, col) {
-        var verifyPlayerMatch = this.verifyPlayerMatch;
+        var verifyPlayerMatch = self.verifyPlayerMatch;
 
         if (verifyPlayerMatch.call(this, row.upOne, col.leftOne) 
           && (verifyPlayerMatch.call(this, row.upTwo, col.leftTwo) || verifyPlayerMatch.call(this, row.downOne, col.rightOne))) {
@@ -128,7 +163,7 @@ define([
 
       /* Validate procedure subject method to verify diagonal down-left win */
       sub.verifyDiagonalDownLeft = function (row, col) {
-        var verifyPlayerMatch = this.verifyPlayerMatch;
+        var verifyPlayerMatch = self.verifyPlayerMatch;
 
         if (verifyPlayerMatch.call(this, row.downOne, col.leftOne) 
           && (verifyPlayerMatch.call(this, row.downTwo, col.leftTwo) || verifyPlayerMatch.call(this, row.upOne, col.rightOne)))  {
@@ -140,7 +175,7 @@ define([
 
       /* Validate procedure subject method to verify diagonal up-right win */
       sub.verifyDiagonalUpRight = function (row, col) {
-        var verifyPlayerMatch = this.verifyPlayerMatch;
+        var verifyPlayerMatch = self.verifyPlayerMatch;
 
         if (verifyPlayerMatch.call(this, row.upOne, col.rightOne) 
           && (verifyPlayerMatch.call(this, row.upTwo, col.rightTwo) || verifyPlayerMatch.call(this, row.downOne, col.leftOne))) {
@@ -152,7 +187,7 @@ define([
 
       /* Validate procedure subject method to verify diagonal down-right win */
       sub.verifyDiagonalDownRight = function  (row, col) {
-        var verifyPlayerMatch = this.verifyPlayerMatch;
+        var verifyPlayerMatch = self.verifyPlayerMatch;
 
         if (verifyPlayerMatch.call(this, row.downOne, col.rightOne) 
           && (verifyPlayerMatch.call(this, row.downTwo, col.rightTwo) || verifyPlayerMatch.call(this, row.upOne, col.leftOne)))  {
@@ -162,7 +197,7 @@ define([
         return false;
       };
 
-      self.verify.call(this);
+      return self.verify.call(this);
     };
 
   })();
@@ -236,18 +271,18 @@ define([
   };
 
   /* Set .col */
-  WinValidation.prototype.getPlayer = function (square) {
+  WinValidation.prototype.getPlayer = function () {
     return this.player;
   };
 
   /* Set .col */
-  WinValidation.prototype.setPlayer = function (square) {
-    this.player = this.BoardData.getPlayerOfSquare(square);
+  WinValidation.prototype.setPlayer = function (val) {
+    this.player = val;
   };
 
   /* Get .col */
   WinValidation.prototype.getPlayerOfSquare = function (square) {
-    return this.BoardData.getPlayerOfSquare(square);
+    return this.BoardData.getPlayerOfSquare.call(this.BoardData, square);
   };
 
   /* Get .square */
@@ -279,21 +314,14 @@ define([
     rowGroup = this.getRowGroup();
     colGroup = this.getColGroup();
 
+    // Set player
+    this.setPlayer(player);
+
     // Run validate procedure and if valid win, return true
     if (that.validateProcedure.call(this, row, col, rowGroup, colGroup)) {
       console.log("publish player winner");
     }
     
-    return false;
-  };
-
-  WinValidation.prototype.verifyPlayerMatch = function (row, col) {
-    var square = this.getSquareOfRowCol(row, col);
-
-    if (this.getPlayerOfSquare(square) === this.getPlayer()) {
-      return true;
-    }
-
     return false;
   };
 

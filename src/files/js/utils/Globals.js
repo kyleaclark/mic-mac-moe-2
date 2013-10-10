@@ -10,8 +10,9 @@ define([
   // Helpers
   Globals.CLICK = Modernizr.touch ? "touchend" : "click";
 
-  // Values
-  Globals.validateWinEvent = "validateWinEvent";
+  // Events
+  Globals.SET_TURN_EVENT = "setTurnEvent";
+  Globals.VALIDATE_WIN_EVENT = "validateWinEvent";
 
   return Globals;
 });
