@@ -1,0 +1,27 @@
+/*=============================
+  BASE COLORS
+-------------------------------*/
+
+$black: #000;
+$white: #fff;
+$baseColor: #a3d34b;
+
+/*=============================
+  SIZE VALUES
+-------------------------------*/
+
+$full-size: 480px;
+$wide-size: 358px;
+
+/*=============================
+  FORMULAS
+-------------------------------*/
+
+/* Media query */
+@mixin apply-to($ltgt, $width) {
+
+  @media only screen and (#{$ltgt}: $width){
+    @content;
+  }
+
+}

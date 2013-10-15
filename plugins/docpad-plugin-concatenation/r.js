@@ -13338,7 +13338,7 @@ exports.SourceNode = require('./source-map/source-node').SourceNode;
 
 //Distributed under the BSD license:
 //Copyright 2012 (c) Mihai Bazon <mihai.bazon@gmail.com>
-define('uglifyjs2', ['exports', '../.', 'logger'], function (exports, MOZ_SourceMap, logger) {
+define('uglifyjs2', ['exports', 'source-map', 'logger'], function (exports, MOZ_SourceMap, logger) {
 (function(exports, global) {
     global["UglifyJS"] = exports;
     "use strict";

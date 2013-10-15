@@ -75,10 +75,12 @@ define([
     that.PLAYER_X = {
       src: "images/player-x.png",
       alt: "Player X",
+      class: "game-board-x"
     };
     that.PLAYER_O = {
       src: "images/player-o.png",
       alt: "Player O",
+      class: "game-board-o"
     };
     that.X = "X";
     that.O = "O";

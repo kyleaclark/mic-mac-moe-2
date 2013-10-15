@@ -1,0 +1,18 @@
+@import "../_global.scss";
+
+body {
+  font: 400 14px/1.4;
+    -webkit-font-smoothing: antialiased;
+       -moz-font-smoothing: antialiased;
+            font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+
+  @include apply-to(min-width, $full-size) {
+    font-size: 16px;
+  }
+}
+
+a {
+	color: $baseColor;
+  font-size: 0.85em;
+}

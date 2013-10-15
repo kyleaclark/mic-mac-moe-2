@@ -1,6 +1,14 @@
-@import 'lib/reset.scss';
+/* --- [ Library ] --- */
 
-@import 'base/variables';
-@import 'base/typography';
-@import 'base/helpers';
-@import 'base/layout';
+@import 'lib/normalize.css';
+
+/* --- [ Common ] --- */
+
+@import 'base/helpers.css';
+@import 'base/typography.css';
+@import 'base/layout.css';
+
+/* --- [ Features ] --- */
+
+@import 'features/game-board.css';
+@import 'features/modal.css';
