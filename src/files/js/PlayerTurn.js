@@ -1,9 +1,8 @@
 define([
   "jquery",
   "js/utils/Globals",
-  "js/utils/PubSub",
-  "js/Game"
-], function ($, Globals, PubSub, Game) {
+  "js/utils/PubSub"
+], function ($, Globals, PubSub) {
   "use strict";
 
   /**
@@ -128,6 +127,15 @@ define([
   };
 
   /**
+  * Set player value of square
+  */
+  PlayerTurn.prototype.setPlayerOfSquare = function (square) {
+    var player = this.getPlayer();
+
+    this.BoardData.setPlayerOfSquare(player, square);
+  };
+
+  /**
   * Add 1 to value of numberOfTurns
   */
   PlayerTurn.prototype.setNumberOfTurns = function (val) {
@@ -151,7 +159,8 @@ define([
 
     if (this.validate(square)) {
       this.render(player, square);
-
+      this.setPlayerOfSquare(square);
+      
       if (this.numberOfTurns > 3) {
         PubSub.publish(this.VALIDATE_WIN_EVENT, [square, player]);
       }

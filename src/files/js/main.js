@@ -29,8 +29,8 @@ define([
     // Initialize Game object
     self.initGame = function () {
       self.game = new Game();
-      self.game.prepare();
-      self.game.startNew();
+      self.game.initialize();
+      self.game.playNew();
     };
   };
 

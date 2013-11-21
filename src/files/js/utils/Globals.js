@@ -13,6 +13,7 @@ define([
   // Events
   Globals.SET_TURN_EVENT = "setTurnEvent";
   Globals.VALIDATE_WIN_EVENT = "validateWinEvent";
+  Globals.FULFILL_WIN_EVENT = "fulfillWinEvent";
 
   return Globals;
 });

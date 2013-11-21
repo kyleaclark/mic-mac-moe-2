@@ -17,7 +17,7 @@ define([
     function init () {
 
       function initGlobals () {
-        self.SET_TURN_EVENT = Globals.SET_TURN_EVENT;
+        
       }
 
       function initConstants () {
@@ -43,7 +43,7 @@ define([
       }
 
       function setBinds () {
-        self.PubSub.subscribe(self.SET_TURN_EVENT, function (ev, player, square) {
+        self.PubSub.subscribe(that.SET_TURN_EVENT, function (ev, player, square) {
           self.setPlayerOfSquare(player, square);
         });
       }
@@ -74,8 +74,10 @@ define([
     init();
   }
 
-  (function initStaticVars () {
+  (function initStatic () {
     var that = BoardData;
+
+    that.SET_TURN_EVENT = Globals.SET_TURN_EVENT;
 
     that.procureBoardSquareObj = function (row, col) {
       var

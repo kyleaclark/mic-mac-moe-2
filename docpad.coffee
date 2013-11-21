@@ -47,14 +47,14 @@ module.exports =
     renderBefore: ({collection})->
       if docpad.getEnvironment() isnt "production"
         collection.each (item)->
-          item.set('dynamic', true) if item.get "isLayout"
-          item.set('dynamic', true) if item.get "isDocument"
-          item.set('dynamic', true) if item.get "isPartial"
+          item.set("dynamic", true) if item.get "isLayout"
+          item.set("dynamic", true) if item.get "isDocument"
+          item.set("dynamic", true) if item.get "isPartial"
 
   plugins:
 
     nodesass:
       environments:
         development:
-          debugInfo: 'normal'
+          debugInfo: "normal"
           renderUnderscoreStylesheets: true
