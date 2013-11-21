@@ -1,56 +1,46 @@
 define([
   "jquery",
+  "underscore",
   "js/utils/Globals",
-  "js/utils/PubSub",
-
-  // Does not return useful object
-  "underscore"
-], function ($, Globals, PubSub) {
+  "js/utils/PubSub"
+], function ($, _, Globals, PubSub) {
   "use strict";
 
   /**
   * WinFulfillment class constructor
   */
-  function WinFulfillment (config) {
-    var 
+  function WinFulfillment(config) {
+    var
       self = this,
       that = WinFulfillment,
-      defaults = {
+      defaults = {};
 
-      };
+    // Instance variables
+    function initVars() {
+      // Configurations
+      self.defaults = defaults;
+      self.options = $.extend({}, defaults, config);
+    }
 
-      // Initialize instance
-      function init () {
+    // Instance objects
+    function initObjects() {
+      self.Class = that;
+      self.PubSub = PubSub;
+    }
 
-        // Instance variables
-        function initVars () {
-          // Configurations
-          self.defaults = defaults;
-          self.options = $.extend({}, defaults, config);
-        }
+    // Event binds
+    function setBinds() {
+      PubSub.subscribe(self.Class.FULFILL_WIN_EVENT, function (ev, args) {
+        self.onFulfillWinEvent(ev, args);
+      });
+    }
 
-        // Instance objects
-        function initObjects () {
-          self.Class = that;
-          self.PubSub = PubSub;
-        }
-
-        // Event binds
-        function setBinds () {
-          PubSub.subscribe(self.Class.FULFILL_WIN_EVENT, function (ev, args) {
-            self.onFulfillWinEvent(ev, args);
-          });
-        }
-
-        initVars();
-        initObjects();
-        setBinds();
-      }
-
-    init();
+    initVars();
+    initObjects();
+    setBinds();
   }
 
-  (function initStaticVars () {
+  (function initStaticVars() {
     var that = WinFulfillment;
 
     that.FULFILL_WIN_EVENT = Globals.FULFILL_WIN_EVENT;
@@ -62,16 +52,14 @@ define([
   };
 
   WinFulfillment.prototype.renderWinner = function () {
-    var 
+    var
       renderPlayerWins,
       playerWins,
       $winTemplate = $("#win-template"),
-      $gameBoard = $("#game-board"),
-      $gameWinner = $("#game-winner"),
-      $winner = $("#game-winner");
+      $gameWinner = $("#game-winner");
 
     renderPlayerWins = (function () {
-      var 
+      var
         winTemplate = $winTemplate.html(),
         playerWinsTemplate = _.template(winTemplate);
 

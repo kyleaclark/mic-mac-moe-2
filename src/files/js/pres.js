@@ -1,16 +1,11 @@
-define([
+/*define([
   "jquery",
-  "js/Game",
-
-  /* Does not return useful object */
-  "underscore"
-], function (
-  $,
-  Game,
-) {
+  "underscore",
+  "js/Game"
+], function ($, _, Game) {
   "use strict";
 
-  function Pres (config) {
+  function Pres(config) {
     var
       self = this,
       defaults = {
@@ -21,40 +16,35 @@ define([
         $winner: $("#game-winner")
       };
 
-    function init () {
-
-      function initVars () {
-        self.defaults = defaults;
-        self.options = $.extend({}, defaults, config);
-        
-        self.$winTemplate = self.options.$winTemplate;
-        self.$gameBoard = self.options.$gameBoard;
-        self.$gameWinner = self.options.$gameWinner;
-        self.$winner = self.options.$winner;
-        self.playerWins = "";
-      }
-
-      function setBinds () {
-        
-        self.$gameWinner.on("hidePlayerWins", function () {
-          self.hideWinEvent.apply(self, arguments);
-        });
-        self.$gameWinner.on("renderPlayerWins", function (e, opts) {
-          self.renderWinEvent.apply(self, arguments);
-        });
-      }
-
-      initVars();
-      setBinds();
+    function initVars() {
+      self.defaults = defaults;
+      self.options = $.extend({}, defaults, config);
+      
+      self.$winTemplate = self.options.$winTemplate;
+      self.$gameBoard = self.options.$gameBoard;
+      self.$gameWinner = self.options.$gameWinner;
+      self.$winner = self.options.$winner;
+      self.playerWins = "";
     }
 
-    init();
+    function setBinds() {
+      
+      self.$gameWinner.on("hidePlayerWins", function () {
+        self.hideWinEvent.apply(self, arguments);
+      });
+      self.$gameWinner.on("renderPlayerWins", function (e, opts) {
+        self.renderWinEvent.apply(self, arguments);
+      });
+    }
+
+    initVars();
+    setBinds();
   }
 
-  (function initStatic () {
+  (function initStatic() {
     var that = Pres;
 
-    function initVars () {
+    function initVars() {
       that.PLAYER_X = {
         src: "img/player-x.png",
         alt: "Player X",
@@ -68,7 +58,7 @@ define([
       that.TURN_FADEIN = 300;
     }
 
-    function initMethods () {
+    function initMethods() {
 
       that.renderTurn = function (player, id) {
         var sq = "#" + id;
@@ -103,7 +93,7 @@ define([
       $("#overlay").show();
       $gameWinner.fadeIn(WINNER_FADEIN);
     }, TURN_FADEIN);
-    */
+    
     console.log("refactor");
   };
 
@@ -115,4 +105,4 @@ define([
 
   return Pres;
 
-});
+});*/

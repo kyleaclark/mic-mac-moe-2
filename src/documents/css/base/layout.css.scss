@@ -2,10 +2,14 @@
 
 body {
   background-color: #010101;
-  color: #a3d34b;
+  color: $baseColor;
   font-family: "Helvetica Neue", Helvetica, "Arimo", Arial, sans-serif;
   margin: 0 auto;
   text-align: center;
+}
+
+footer {
+  margin-top: 25px;
 }
 
 #logo {
@@ -30,7 +34,7 @@ body {
 
 /* refactor !!! */
 .btn-play-again {
-  background-color: #a3d34b;
+  background-color: $baseColor;
   border: 3px solid rgba(68, 68, 58, .5);
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px;
@@ -42,6 +46,13 @@ body {
   padding: 6px 12px;
 }
 
-hr {
-  width: 468px;
+a {
+  color: #313131;
+  font-size: .85em;
+  font-weight: bold;
+  text-decoration: none;
+
+  &:hover {
+    color: $baseColor;
+  }
 }

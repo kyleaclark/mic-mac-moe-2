@@ -17,7 +17,7 @@ module.exports =
     site:
 
       # The production url of our website
-      url: ""
+      url: "http://micmacmoejs.com"
 
       # The default title of our website
       title: "Mic-Mac-Moe"
@@ -52,6 +52,10 @@ module.exports =
           item.set("dynamic", true) if item.get "isPartial"
 
   plugins:
+
+    jshint:
+      ignorePaths: ["lib"]
+      ignoreFiles: ["js/app.js"]
 
     nodesass:
       environments:

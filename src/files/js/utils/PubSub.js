@@ -8,7 +8,7 @@ define([
   */
   
   var
-    PubSub = {}, 
+    PubSub = {},
     obj = $({});
 
   PubSub.publish = function () {

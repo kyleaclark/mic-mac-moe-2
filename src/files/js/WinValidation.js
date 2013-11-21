@@ -10,42 +10,37 @@ define([
       self = this,
       defaults = {};
 
-    function init() {
-
-      function initGlobals() {
-        self.VALIDATE_WIN_EVENT = Globals.VALIDATE_WIN_EVENT;
-      }
-
-      function initVars() {
-        self.defaults = defaults;
-        self.options = $.extend({}, defaults, config);
-
-        self.index = 0;
-        self.row = 0;
-        self.col = 0;
-        self.rowGroup = {};
-        self.colGroup = {};
-        self.player = "";
-      }
-
-      function initObjects() {
-        self.Class = WinValidation;
-        self.BoardData = BoardData;
-      }
-
-      function setBinds() {
-        PubSub.subscribe(self.VALIDATE_WIN_EVENT, function (ev, square, player) {
-          self.validate(square, player);
-        });
-      }
-
-      initGlobals();
-      initVars();
-      initObjects();
-      setBinds();
+    function initGlobals() {
+      self.VALIDATE_WIN_EVENT = Globals.VALIDATE_WIN_EVENT;
     }
 
-    init();
+    function initVars() {
+      self.defaults = defaults;
+      self.options = $.extend({}, defaults, config);
+
+      self.index = 0;
+      self.row = 0;
+      self.col = 0;
+      self.rowGroup = {};
+      self.colGroup = {};
+      self.player = "";
+    }
+
+    function initObjects() {
+      self.Class = WinValidation;
+      self.BoardData = BoardData;
+    }
+
+    function setBinds() {
+      PubSub.subscribe(self.VALIDATE_WIN_EVENT, function (ev, square, player) {
+        self.validate(square, player);
+      });
+    }
+
+    initGlobals();
+    initVars();
+    initObjects();
+    setBinds();
   }
 
   (function initStatic() {
@@ -108,11 +103,10 @@ define([
       sub.verifyVerticalWin = function (row, col) {
         var verifyPlayerMatch = sub.verifyPlayerMatch;
 
-        if (verifyPlayerMatch.call(this, row.upOne, col)
-          && (verifyPlayerMatch.call(this, row.upTwo, col) || verifyPlayerMatch.call(this, row.downOne, col))) {
-            return true;
+        if (verifyPlayerMatch.call(this, row.upOne, col) && (verifyPlayerMatch.call(this, row.upTwo, col) || verifyPlayerMatch.call(this, row.downOne, col))) {
+          return true;
         } else if (verifyPlayerMatch.call(this, row.downOne, col) && verifyPlayerMatch.call(this, row.downTwo, col)) {
-            return true;
+          return true;
         }
 
         return false;
@@ -122,11 +116,10 @@ define([
       sub.verifyHorizontalWin = function (row, col) {
         var verifyPlayerMatch = sub.verifyPlayerMatch;
 
-        if (verifyPlayerMatch.call(this, row, col.leftOne) 
-          && (verifyPlayerMatch.call(this, row, col.leftTwo) || verifyPlayerMatch.call(this, row, col.rightOne))) {
-            return true;
+        if (verifyPlayerMatch.call(this, row, col.leftOne) && (verifyPlayerMatch.call(this, row, col.leftTwo) || verifyPlayerMatch.call(this, row, col.rightOne))) {
+          return true;
         } else if (verifyPlayerMatch.call(this, row, col.rightOne) && verifyPlayerMatch.call(this, row, col.rightTwo)) {
-            return true;
+          return true;
         }
 
         return false;
@@ -134,11 +127,8 @@ define([
 
       /* Validate procedure subject method to verify diagonal win */
       sub.verifyDiagonalWin = function (row, col) {
-       var verifyPlayerMatch = sub.verifyPlayerMatch;
-
-        if (self.verifyDiagonalUpLeft.call(this, row, col) || self.verifyDiagonalDownLeft.call(this, row, col) 
-          || self.verifyDiagonalUpRight.call(this, row, col) || self.verifyDiagonalDownRight.call(this, row, col)) {
-            return true;
+        if (self.verifyDiagonalUpLeft.call(this, row, col) || self.verifyDiagonalDownLeft.call(this, row, col) || self.verifyDiagonalUpRight.call(this, row, col) || self.verifyDiagonalDownRight.call(this, row, col)) {
+          return true;
         }
 
         return false;
@@ -148,9 +138,8 @@ define([
       sub.verifyDiagonalUpLeft = function (row, col) {
         var verifyPlayerMatch = sub.verifyPlayerMatch;
 
-        if (verifyPlayerMatch.call(this, row.upOne, col.leftOne) 
-          && (verifyPlayerMatch.call(this, row.upTwo, col.leftTwo) || verifyPlayerMatch.call(this, row.downOne, col.rightOne))) {
-            return true;
+        if (verifyPlayerMatch.call(this, row.upOne, col.leftOne) && (verifyPlayerMatch.call(this, row.upTwo, col.leftTwo) || verifyPlayerMatch.call(this, row.downOne, col.rightOne))) {
+          return true;
         }
 
         return false;
@@ -160,9 +149,8 @@ define([
       sub.verifyDiagonalDownLeft = function (row, col) {
         var verifyPlayerMatch = sub.verifyPlayerMatch;
 
-        if (verifyPlayerMatch.call(this, row.downOne, col.leftOne) 
-          && (verifyPlayerMatch.call(this, row.downTwo, col.leftTwo) || verifyPlayerMatch.call(this, row.upOne, col.rightOne)))  {
-            return true;
+        if (verifyPlayerMatch.call(this, row.downOne, col.leftOne) && (verifyPlayerMatch.call(this, row.downTwo, col.leftTwo) || verifyPlayerMatch.call(this, row.upOne, col.rightOne)))  {
+          return true;
         }
 
         return false;
@@ -172,9 +160,8 @@ define([
       sub.verifyDiagonalUpRight = function (row, col) {
         var verifyPlayerMatch = sub.verifyPlayerMatch;
 
-        if (verifyPlayerMatch.call(this, row.upOne, col.rightOne) 
-          && (verifyPlayerMatch.call(this, row.upTwo, col.rightTwo) || verifyPlayerMatch.call(this, row.downOne, col.leftOne))) {
-            return true;
+        if (verifyPlayerMatch.call(this, row.upOne, col.rightOne) && (verifyPlayerMatch.call(this, row.upTwo, col.rightTwo) || verifyPlayerMatch.call(this, row.downOne, col.leftOne))) {
+          return true;
         }
 
         return false;
@@ -184,9 +171,8 @@ define([
       sub.verifyDiagonalDownRight = function  (row, col) {
         var verifyPlayerMatch = sub.verifyPlayerMatch;
 
-        if (verifyPlayerMatch.call(this, row.downOne, col.rightOne) 
-          && (verifyPlayerMatch.call(this, row.downTwo, col.rightTwo) || verifyPlayerMatch.call(this, row.upOne, col.leftOne)))  {
-            return true;
+        if (verifyPlayerMatch.call(this, row.downOne, col.rightOne) && (verifyPlayerMatch.call(this, row.downTwo, col.rightTwo) || verifyPlayerMatch.call(this, row.upOne, col.leftOne)))  {
+          return true;
         }
 
         return false;

@@ -18,6 +18,14 @@ module.exports = function (grunt) {
       }
     },
 
+    jshint: {
+      files: ["Gruntfile.js", "src/**/*.js"],
+      options: {
+        ignores: ["src/files/lib/**/*.js"],
+        jshintrc: ".jshintrc"
+      }
+    },
+
     requirejs: {
       compile: {
         options: {
@@ -28,10 +36,6 @@ module.exports = function (grunt) {
           out: "src/files/js/output.js"
         }
       }
-    },
-
-    mocha: {
-      index: [ "test/index.html" ]
     },
 
     exec: {
@@ -57,13 +61,12 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks("grunt-bower-task");
   grunt.loadNpmTasks("grunt-contrib-requirejs");
   grunt.loadNpmTasks("grunt-exec");
-  grunt.loadNpmTasks("grunt-mocha");
+  grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks("grunt-node-version");
   grunt.loadNpmTasks("grunt-dependency-installer");
 
   grunt.registerTask("prepare", ["bower:install", "dependency_installer"]);
   grunt.registerTask("build", ["node_version","prepare", "requirejs:compile", "exec:buildSite"]);
-  grunt.registerTask("test", ["mocha"]);
   grunt.registerTask("run", ["node_version","exec:run"]);
   grunt.registerTask("production", ["node_version","exec:production"]);
   grunt.registerTask("run-server", ["exec:runServer"]);

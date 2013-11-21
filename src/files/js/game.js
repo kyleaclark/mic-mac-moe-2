@@ -7,9 +7,9 @@ define([
   "js/WinValidation",
   "js/PlayerTurn"
 ], function ($, Globals, BoardTemplate, BoardData, WinFulfillment, WinValidation, PlayerTurn) {
-  "use strict";  
+  "use strict";
 
-  function Game (config) {
+  function Game(config) {
     var
       self = this,
       defaults = {
@@ -18,46 +18,41 @@ define([
         $playAgain: $(".btn-play-again")
       };
 
-    function init () {
-
-      function initGlobals () {
-        self.CLICK = Globals.CLICK;
-      }
-
-      function initVars () {
-        self.defaults = defaults;
-        self.options = $.extend({}, defaults, config);
-        self.$gameBoard = self.options.$gameBoard;
-        self.$gameWinner = self.options.$gameWinner;
-        self.$playAgain = self.options.$playAgain;
-      }
-
-      function initObjects () {
-        self.boardTemplate = new BoardTemplate();
-        self.boardData = new BoardData();
-        self.winFulfillment = new WinFulfillment();
-        self.winValidation = new WinValidation({}, self.boardData);
-        self.playerTurn = new PlayerTurn({}, self.boardData);
-      }
-
-      function initGameBoard () {
-        //self.boardData.resetBoardData();
-      }
-
-      function setBinds () {
-        self.$playAgain.on(self.CLICK, function () {
-          self.playAgain();
-        });
-      }
-  
-      initGlobals();
-      initVars();
-      initObjects();
-      initGameBoard();
-      setBinds();
+    function initGlobals() {
+      self.CLICK = Globals.CLICK;
     }
 
-    init();
+    function initVars() {
+      self.defaults = defaults;
+      self.options = $.extend({}, defaults, config);
+      self.$gameBoard = self.options.$gameBoard;
+      self.$gameWinner = self.options.$gameWinner;
+      self.$playAgain = self.options.$playAgain;
+    }
+
+    function initObjects() {
+      self.boardTemplate = new BoardTemplate();
+      self.boardData = new BoardData();
+      self.winFulfillment = new WinFulfillment();
+      self.winValidation = new WinValidation({}, self.boardData);
+      self.playerTurn = new PlayerTurn({}, self.boardData);
+    }
+
+    function initGameBoard() {
+      //self.boardData.resetBoardData();
+    }
+
+    function setBinds() {
+      self.$playAgain.on(self.CLICK, function () {
+        self.playAgain();
+      });
+    }
+  
+    initGlobals();
+    initVars();
+    initObjects();
+    initGameBoard();
+    setBinds();
   }
 
   Game.prototype.initialize = function () {

@@ -1,9 +1,7 @@
 define([
   "jquery",
-
-  // These do not return useful objects
   "lib/modernizr.touchevents"
-], function ($) {
+], function ($, Modernizr) {
 
   var Globals = {};
 

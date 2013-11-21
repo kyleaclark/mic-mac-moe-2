@@ -8,8 +8,8 @@ define([
   /**
   * PlayerTurn class constructor
   */
-  function PlayerTurn (config, BoardData) {
-    var 
+  function PlayerTurn(config, BoardData) {
+    var
       self = this,
       that = PlayerTurn,
       defaults = {
@@ -17,58 +17,52 @@ define([
         resetGame: true
       };
 
-      // Initialize instance
-      function init () {
+    // Global variables
+    function initGlobals() {
+      self.CLICK = Globals.CLICK;
+      self.SET_TURN_EVENT = Globals.SET_TURN_EVENT;
+      self.VALIDATE_WIN_EVENT = Globals.VALIDATE_WIN_EVENT;
+    }
 
-        // Global variables
-        function initGlobals () {
-          self.CLICK = Globals.CLICK;
-          self.SET_TURN_EVENT = Globals.SET_TURN_EVENT;
-          self.VALIDATE_WIN_EVENT = Globals.VALIDATE_WIN_EVENT;
-        }
+    // Instance variables
+    function initVars() {
+      // Configurations
+      self.defaults = defaults;
+      self.options = $.extend({}, defaults, config);
+      self.gameBoard = self.options.gameBoard;
 
-        // Instance variables
-        function initVars () {
-          // Configurations
-          self.defaults = defaults;
-          self.options = $.extend({}, defaults, config);
-          self.gameBoard = self.options.gameBoard;
+      // Constants
+      self.EMPTY = "";
+      self.TURN_INCREMENT = 1;
 
-          // Constants
-          self.EMPTY = "";
-          self.TURN_INCREMENT = 1;
+      // Variables
+      self.$boardID = $("#" + self.gameBoard);
+      self.player = "X";
+      self.numberOfTurns = 0;
+      self.turnSquare = "";
+    }
 
-          // Variables
-          self.$boardID = $("#" + self.gameBoard);
-          self.player = "X";
-          self.numberOfTurns = 0;
-          self.turnSquare = "";
-        }
+    // Instance objects
+    function initObjects() {
+      self.Class = that;
+      self.PubSub = PubSub;
+      self.BoardData = BoardData;
+    }
 
-        // Instance objects
-        function initObjects () {
-          self.Class = that;
-          self.PubSub = PubSub;
-          self.BoardData = BoardData;
-        }
+    // Event binds
+    function setBinds() {
+      self.$boardID.on(self.CLICK, function (event) {
+        self.onClickEvent(event);
+      });
+    }
 
-        // Event binds
-        function setBinds () {
-          self.$boardID.on(self.CLICK, function (event) {
-            self.onClickEvent(event);
-          });
-        }
-
-        initGlobals();
-        initVars();
-        initObjects();
-        setBinds();
-      }
-
-    init();
+    initGlobals();
+    initVars();
+    initObjects();
+    setBinds();
   }
 
-  (function initStaticVars () {
+  (function initStaticVars() {
     var that = PlayerTurn;
 
     that.PLAYER_X = {
@@ -97,7 +91,7 @@ define([
     }
 
     return false;
-  }
+  };
     
   /**
   * Return value of current player turn
@@ -153,7 +147,7 @@ define([
   * Player turn click event handler
   */
   PlayerTurn.prototype.onClickEvent = function (event) {
-    var 
+    var
       square = event.target.id,
       player = this.getPlayer();
 
@@ -169,13 +163,13 @@ define([
       this.setNumberOfTurns(this.TURN_INCREMENT);
       this.PubSub.publish(this.SET_TURN_EVENT, [player, square]);
     }
-  }
+  };
 
   /**
   * Render player turn to dom game board square
   */
   PlayerTurn.prototype.render = function (player, square) {
-    var 
+    var
       that = PlayerTurn,
       squareId = "#" + square,
       TURN_FADEIN = 300,

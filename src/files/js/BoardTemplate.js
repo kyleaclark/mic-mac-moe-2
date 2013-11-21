@@ -1,18 +1,12 @@
 define([
   "jquery",
+  "underscore",
   "js/Game",
   "js/config/BoardConfig",
-
-  // Does not return useful object
-  "underscore"
-], function (
-  $,
-  Game,
-  BoardConfig
-) {
+], function ($, _, Game, BoardConfig) {
   "use strict";
 
-  function BoardTemplate (config) {
+  function BoardTemplate(config) {
     var
       self = this,
       defaults = {
@@ -20,51 +14,46 @@ define([
         $gameBoardTemplate: $("#game-board-template")
       };
 
-    function init () {
-
-      function initConstants () {
-        self.EMPTY = "";
-      }
-
-      function initVars () {
-        self.defaults = defaults;
-        self.options = $.extend({}, defaults, config);
-        self.$gameBoard = self.options.$gameBoard;
-        self.$gameBoardTemplate = self.options.$gameBoardTemplate;
-
-        self.gameBoardSquares = "";
-      }
-
-      function initObjects () {
-        self.boardConfig = BoardConfig;
-      }
-
-      function setBinds () {
-        /*
-        self.$gameBoard.on("generateBoardTemplate", function () {
-          self.generateBoardTemplate.apply(self, arguments);
-        });
-        */
-        self.$gameBoard.on("renderEmptyBoard", function () {
-          self.renderEmptyBoard.apply(self, arguments);
-        });
-      }
-
-      initConstants();
-      initObjects();
-      initVars();
+    function initConstants() {
+      self.EMPTY = "";
     }
 
-    init();
+    function initVars() {
+      self.defaults = defaults;
+      self.options = $.extend({}, defaults, config);
+      self.$gameBoard = self.options.$gameBoard;
+      self.$gameBoardTemplate = self.options.$gameBoardTemplate;
+
+      self.gameBoardSquares = "";
+    }
+
+    function initObjects() {
+      self.boardConfig = BoardConfig;
+    }
+
+    /*function setBinds() {
+      
+      self.$gameBoard.on("generateBoardTemplate", function () {
+        self.generateBoardTemplate.apply(self, arguments);
+      });
+      
+      self.$gameBoard.on("renderEmptyBoard", function () {
+        self.renderEmptyBoard.apply(self, arguments);
+      });
+    }*/
+
+    initConstants();
+    initObjects();
+    initVars();
   }
 
   BoardTemplate.prototype.generate = function () {
-    var 
+    var
       self = this,
       renderGameSquare;
 
     renderGameSquare = (function () {
-      var 
+      var
         gameBoardTemplate = self.$gameBoardTemplate.html(),
         squareTemplate = _.template(gameBoardTemplate);
 

@@ -9,22 +9,15 @@ define([
   var NS = window.NS;
 
   // Main program object
-  NS.Main = function Main (config) {
-    var 
+  NS.Main = function Main(config) {
+    var
       self = this,
       defaults = {};
 
-    function init () {
-
-      function initVars () {
-        self.defaults = defaults;
-        self.options = $.extend({}, defaults, config);
-      }
-
-      initVars();
+    function initVars() {
+      self.defaults = defaults;
+      self.options = $.extend({}, defaults, config);
     }
-
-    init();
 
     // Initialize Game object
     self.initGame = function () {
@@ -32,13 +25,15 @@ define([
       self.game.initialize();
       self.game.playNew();
     };
+
+    initVars();
   };
 
   // Initialize Main program object
   NS.initMain = function () {
     var main = new NS.Main();
 
-    function domReady () {
+    function domReady() {
       main.initGame();
     }
 

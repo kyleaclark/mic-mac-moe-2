@@ -4,4 +4,4 @@ layout: base
 
   <%- @content %>
 
-  <!--<%- @partial "footer.html", @ %>-->
+  <%- @partial "footer.html", @ %>

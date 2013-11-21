@@ -1,80 +1,73 @@
 define([
   "jquery",
+  "underscore",
   "js/utils/Globals",
-  "js/utils/PubSub",
-  "js/Game",
-
-  "underscore"
-], function ($, Globals, PubSub, Game) {
+  "js/utils/PubSub"
+], function ($, _, Globals, PubSub) {
   "use strict";
 
-  function BoardData (config) {
+  function BoardData(config) {
     var
       self = this,
       that = BoardData,
       defaults = {};
 
-    function init () {
-
-      function initGlobals () {
-        
-      }
-
-      function initConstants () {
-        self.MATRIX_ROWS = 5;
-        self.MATRIX_COLS = 5;
-        self.BOARD_SQUARES = self.MATRIX_ROWS * self.MATRIX_COLS;
-        self.EMPTY = "";
-      }
-
-      function initVars () {
-        // Options
-        self.defaults = defaults;
-        self.options = $.extend({}, defaults, config);
-
-        // Variables
-        self.boardElems = "";
-        self.boardData = [];
-      }
-
-      function initObjects () {
-        self.Class = BoardData;
-        self.PubSub = PubSub;
-      }
-
-      function setBinds () {
-        self.PubSub.subscribe(that.SET_TURN_EVENT, function (ev, player, square) {
-          self.setPlayerOfSquare(player, square);
-        });
-      }
-
-      function prepare () {
-        var 
-          row,
-          col,
-          boardSquareObj,
-          square;
-
-        for (row = 0; row < self.MATRIX_ROWS; row++) {
-          for (col = 0; col < self.MATRIX_COLS; col++) {
-            boardSquareObj = that.procureBoardSquareObj(row, col);
-            square = boardSquareObj.el;
-            self.boardData[square] = boardSquareObj;
-          }
-        }
-      }
-
-      initGlobals();
-      initConstants();
-      initVars();
-      initObjects()
-      prepare();
+    function initGlobals() {
+      
     }
 
-    init();
+    function initConstants() {
+      self.MATRIX_ROWS = 5;
+      self.MATRIX_COLS = 5;
+      self.BOARD_SQUARES = self.MATRIX_ROWS * self.MATRIX_COLS;
+      self.EMPTY = "";
+    }
+
+    function initVars() {
+      // Options
+      self.defaults = defaults;
+      self.options = $.extend({}, defaults, config);
+
+      // Variables
+      self.boardElems = "";
+      self.boardData = [];
+    }
+
+    function initObjects() {
+      self.Class = BoardData;
+      self.PubSub = PubSub;
+    }
+
+    /*function setBinds() {
+      self.PubSub.subscribe(that.SET_TURN_EVENT, function (ev, player, square) {
+        self.setPlayerOfSquare(player, square);
+      });
+    }*/
+
+    function prepare() {
+      var
+        row,
+        col,
+        boardSquareObj,
+        square;
+
+      for (row = 0; row < self.MATRIX_ROWS; row++) {
+        for (col = 0; col < self.MATRIX_COLS; col++) {
+          boardSquareObj = that.procureBoardSquareObj(row, col);
+          square = boardSquareObj.el;
+          self.boardData[square] = boardSquareObj;
+        }
+      }
+    }
+
+    initGlobals();
+    initConstants();
+    initVars();
+    initObjects();
+    prepare();
   }
 
-  (function initStatic () {
+  (function initStatic() {
     var that = BoardData;
 
     that.SET_TURN_EVENT = Globals.SET_TURN_EVENT;
@@ -127,9 +120,9 @@ define([
   };
 
   BoardData.prototype.resetBoardData = function () {
-    _.each(this.boardData, function (el, item) {
+    /*_.each(this.boardData, function (el, item) {
       // Empty player values from boardData
-    });
+    });*/
 
     //$gameBoard.trigger("renderGameBoardSquares");
   };
