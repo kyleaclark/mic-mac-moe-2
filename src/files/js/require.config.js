@@ -1,8 +1,16 @@
 var require = {
   paths: {
-    jquery: "/lib/jquery-2.0.3",
-    underscore: "/lib/underscore-1.5.1",
-    test: "../test"
+    jquery: "lib/jquery-2.0.3",
+    underscore: "lib/underscore-1.5.1"
+  },
+
+  shim: {
+    underscore: {
+      exports: "_"
+    },
+    "lib/modernizr.touchevents": {
+      exports: "Modernizr"
+    }
   }
 };
 

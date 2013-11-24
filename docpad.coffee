@@ -17,7 +17,7 @@ module.exports =
     site:
 
       # The production url of our website
-      url: ""
+      url: "http://micmacmoejs.com"
 
       # The default title of our website
       title: "Mic-Mac-Moe"
@@ -47,14 +47,18 @@ module.exports =
     renderBefore: ({collection})->
       if docpad.getEnvironment() isnt "production"
         collection.each (item)->
-          item.set('dynamic', true) if item.get "isLayout"
-          item.set('dynamic', true) if item.get "isDocument"
-          item.set('dynamic', true) if item.get "isPartial"
+          item.set("dynamic", true) if item.get "isLayout"
+          item.set("dynamic", true) if item.get "isDocument"
+          item.set("dynamic", true) if item.get "isPartial"
 
   plugins:
+
+    jshint:
+      ignorePaths: ["lib"]
+      ignoreFiles: ["js/app.js"]
 
     nodesass:
       environments:
         development:
-          debugInfo: 'normal'
+          debugInfo: "normal"
           renderUnderscoreStylesheets: true
