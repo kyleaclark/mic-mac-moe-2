@@ -1,14 +1,15 @@
 /* --- [ Library ] --- */
 
-@import 'lib/normalize.css';
+@import "lib/normalize.css";
 
 /* --- [ Common ] --- */
 
-@import 'base/helpers.css';
-@import 'base/typography.css';
-@import 'base/layout.css';
+@import "base/helpers.css";
+@import "base/typography.css";
+@import "base/layout.css";
+@import "base/buttons.css";
 
 /* --- [ Features ] --- */
 
-@import 'features/game-board.css';
-@import 'features/modal.css';
+@import "features/game-board.css";
+@import "features/modal.css";

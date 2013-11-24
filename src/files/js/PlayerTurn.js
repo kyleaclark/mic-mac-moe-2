@@ -37,7 +37,7 @@ define([
 
       // Variables
       self.$boardID = $("#" + self.gameBoard);
-      self.player = "X";
+      self.player = that.DEFAULT_PLAYER;
       self.numberOfTurns = 0;
       self.turnSquare = "";
     }
@@ -77,6 +77,7 @@ define([
     };
     that.X = "X";
     that.O = "O";
+    that.DEFAULT_PLAYER = that.X;
   })();
 
   /**
@@ -100,17 +101,12 @@ define([
     return this.player;
   };
 
+
   /**
-  * Set value of next player turn (opposite of current player turn)
+  * Set value of current player turn
   */
   PlayerTurn.prototype.setPlayer = function (val) {
-    var that = this.Class;
-
-    if (val === that.X) {
-      this.player = that.O;
-    } else {
-      this.player = that.X;
-    }
+    this.player = val;
   };
 
   /**
@@ -144,6 +140,19 @@ define([
   };
 
   /**
+  * Update value of next player turn (opposite of current player turn)
+  */
+  PlayerTurn.prototype.updateNextPlayerTurn = function (val) {
+    var that = this.Class;
+
+    if (val === that.X) {
+      this.setPlayer(that.O);
+    } else {
+      this.setPlayer(that.X);
+    }
+  };
+
+  /**
   * Player turn click event handler
   */
   PlayerTurn.prototype.onClickEvent = function (event) {
@@ -159,7 +168,7 @@ define([
         PubSub.publish(this.VALIDATE_WIN_EVENT, [square, player]);
       }
 
-      this.setPlayer(player);
+      this.updateNextPlayerTurn(player);
       this.setNumberOfTurns(this.TURN_INCREMENT);
       this.PubSub.publish(this.SET_TURN_EVENT, [player, square]);
     }
@@ -180,6 +189,15 @@ define([
     } else {
       $(playerEl, that.PLAYER_O).fadeIn(TURN_FADEIN).appendTo(squareId);
     }
+  };
+
+  /**
+  * Reset turn data
+  */
+  PlayerTurn.prototype.reset = function () {
+    var that = this.Class;
+
+    this.setPlayer(that.DEFAULT_PLAYER);
   };
 
   return PlayerTurn;

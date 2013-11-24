@@ -310,12 +310,6 @@ define([
     return false;
   };
 
-  /* TODO: Move to a separate class
-  WinValidation.prototype.setWinner = function (player) {
-    this.$gameWinner.trigger("renderPlayerWins", {"player" : player});
-  };
-  */
-
   return WinValidation;
 
 });

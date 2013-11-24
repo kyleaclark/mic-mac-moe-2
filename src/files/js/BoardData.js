@@ -30,19 +30,13 @@ define([
 
       // Variables
       self.boardElems = "";
-      self.boardData = [];
+      self.boardDataObj = {};
     }
 
     function initObjects() {
       self.Class = BoardData;
       self.PubSub = PubSub;
     }
-
-    /*function setBinds() {
-      self.PubSub.subscribe(that.SET_TURN_EVENT, function (ev, player, square) {
-        self.setPlayerOfSquare(player, square);
-      });
-    }*/
 
     function prepare() {
       var
@@ -55,7 +49,7 @@ define([
         for (col = 0; col < self.MATRIX_COLS; col++) {
           boardSquareObj = that.procureBoardSquareObj(row, col);
           square = boardSquareObj.el;
-          self.boardData[square] = boardSquareObj;
+          self.boardDataObj[square] = boardSquareObj;
         }
       }
     }
@@ -94,23 +88,23 @@ define([
   })();
 
   BoardData.prototype.getIndexOfSquare = function (square) {
-    return this.boardData[square].index;
+    return this.boardDataObj[square].index;
   };
 
   BoardData.prototype.getPlayerOfSquare = function (square) {
-    return this.boardData[square].player;
+    return this.boardDataObj[square].player;
   };
 
   BoardData.prototype.setPlayerOfSquare = function (player, square) {
-    this.boardData[square].player = player;
+    this.boardDataObj[square].player = player;
   };
 
   BoardData.prototype.getRowOfSquare = function (square) {
-    return this.boardData[square].row;
+    return this.boardDataObj[square].row;
   };
 
   BoardData.prototype.getColOfSquare = function (square) {
-    return this.boardData[square].col;
+    return this.boardDataObj[square].col;
   };
 
   BoardData.prototype.getSquareOfRowCol = function (row, col) {
@@ -119,12 +113,12 @@ define([
     return that.procureSquareString(row, col);
   };
 
-  BoardData.prototype.resetBoardData = function () {
-    /*_.each(this.boardData, function (el, item) {
-      // Empty player values from boardData
-    });*/
-
-    //$gameBoard.trigger("renderGameBoardSquares");
+  BoardData.prototype.reset = function () {
+    _.each(this.boardDataObj, function (value) {
+      if (value.player.length > 0) {
+        value.player = "";
+      }
+    });
   };
 
   return BoardData;

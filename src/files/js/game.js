@@ -14,8 +14,8 @@ define([
       self = this,
       defaults = {
         $gameBoard: $("#game-board"),
-        $gameWinner: $("#game-winner"),
-        $playAgain: $(".btn-play-again")
+        $gameWinner: $("[data-modal='winner']"),
+        $playAgain: $("[data-game='playAgain']")
       };
 
     function initGlobals() {
@@ -38,10 +38,6 @@ define([
       self.playerTurn = new PlayerTurn({}, self.boardData);
     }
 
-    function initGameBoard() {
-      //self.boardData.resetBoardData();
-    }
-
     function setBinds() {
       self.$playAgain.on(self.CLICK, function () {
         self.playAgain();
@@ -51,26 +47,23 @@ define([
     initGlobals();
     initVars();
     initObjects();
-    initGameBoard();
     setBinds();
   }
 
   Game.prototype.initialize = function () {
-    this.boardTemplate.generate();
+    if (this.boardTemplate.$gameBoard.length > 0) {
+      this.boardTemplate.generate();
+    }
   };
 
   Game.prototype.playNew = function () {
-    /*
-    this.board.resetBoardData();
-    this.turn.resetTurnData();
-    this.$gameWinner.trigger("hidePlayerWins");
-    */
     this.boardTemplate.render();
   };
 
   Game.prototype.playAgain = function () {
-    $("#overlay").hide();
-    $("#game-winner").fadeOut(500);
+    this.boardData.reset();
+    this.playerTurn.reset();
+    this.winFulfillment.hideWinnerModal();
     this.playNew();
   };
 

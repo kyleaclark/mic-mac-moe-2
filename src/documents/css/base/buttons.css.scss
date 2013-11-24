@@ -1,0 +1,15 @@
+@import "../_global.scss";
+
+.btn {
+  background: $baseColor;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=85)";
+  background: rgba($baseColor, .85);
+  border: 3px solid rgba(68, 68, 58, .5);
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+  border-radius: 5px;
+  font-size: 18px;
+  font-weight: bold;
+  outline: none;
+  padding: 6px 12px;
+}

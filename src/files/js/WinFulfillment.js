@@ -13,13 +13,25 @@ define([
     var
       self = this,
       that = WinFulfillment,
-      defaults = {};
+      defaults = {
+        overlayEl: "#overlay",
+        winnerTemplateEl: "[data-template='winner']",
+        winnerModal: "[data-modal='winner']"
+      };
 
     // Instance variables
     function initVars() {
       // Configurations
       self.defaults = defaults;
       self.options = $.extend({}, defaults, config);
+      self.overlayEl = self.options.overlayEl;
+      self.winnerTemplateEl = self.options.winnerTemplateEl;
+      self.winnerModal = self.options.winnerModal;
+
+      self.$overlayEl = $(self.overlayEl);
+      self.$winnerTemplateEl = $(self.winnerTemplateEl);
+      self.$winnerModal = $(self.winnerModal);
+      self.playerWinnerEl = "#player-winner";
     }
 
     // Instance objects
@@ -47,32 +59,39 @@ define([
   })();
 
   WinFulfillment.prototype.onFulfillWinEvent = function (ev, args) {
-    this.renderWinnerOpts = args;
-    this.renderWinner();
+    this.winnerOpts = args;
+    this.generateWinnerTemplate(this.winnerOpts);
+    this.showWinnerModal();
   };
 
-  WinFulfillment.prototype.renderWinner = function () {
+  WinFulfillment.prototype.generateWinnerTemplate = function (data) {
     var
-      renderPlayerWins,
-      playerWins,
-      $winTemplate = $("#win-template"),
-      $gameWinner = $("#game-winner");
+      templateHtml = this.$winnerTemplateEl.html(),
+      template = _.template(templateHtml);
 
-    renderPlayerWins = (function () {
-      var
-        winTemplate = $winTemplate.html(),
-        playerWinsTemplate = _.template(winTemplate);
+    this.winnerTemplate = template(data);
+  };
 
-      return playerWinsTemplate;
-    }());
+  WinFulfillment.prototype.showWinnerModal = function () {
+    var self = this;
 
-    playerWins = renderPlayerWins(this.renderWinnerOpts);
-    $gameWinner.prepend(playerWins);
+    this.$winnerModal.prepend(this.winnerTemplate);
 
     setTimeout(function () {
-      $("#overlay").show();
-      $gameWinner.fadeIn(500);
+      self.$overlayEl.show();
+      self.$winnerModal.fadeIn(500);
     }, 300);
+
+    this.$playerWinnerEl = $(this.playerWinnerEl);
+  };
+
+  WinFulfillment.prototype.hideWinnerModal = function () {
+    var self = this;
+
+    this.$overlayEl.hide();
+    this.$winnerModal.fadeOut(250, function () {
+      self.$playerWinnerEl.empty().remove();
+    });
   };
 
   return WinFulfillment;

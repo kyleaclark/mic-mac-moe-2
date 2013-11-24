@@ -11,7 +11,7 @@ define([
       self = this,
       defaults = {
         $gameBoard: $("#game-board"),
-        $gameBoardTemplate: $("#game-board-template")
+        $gameBoardTemplate: $("[data-template='gameBoard']")
       };
 
     function initConstants() {
@@ -30,17 +30,6 @@ define([
     function initObjects() {
       self.boardConfig = BoardConfig;
     }
-
-    /*function setBinds() {
-      
-      self.$gameBoard.on("generateBoardTemplate", function () {
-        self.generateBoardTemplate.apply(self, arguments);
-      });
-      
-      self.$gameBoard.on("renderEmptyBoard", function () {
-        self.renderEmptyBoard.apply(self, arguments);
-      });
-    }*/
 
     initConstants();
     initObjects();
