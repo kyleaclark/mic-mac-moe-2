@@ -1,0 +1,35 @@
+@import "../_global.scss";
+
+body {
+  color: $baseColor;
+  font: 400 14px/1.4;
+    -webkit-font-smoothing: antialiased;
+       -moz-font-smoothing: antialiased;
+            font-smoothing: antialiased;
+  font-family: "Helvetica Neue", Helvetica, "Arimo", Arial, sans-serif;
+  text-rendering: optimizeLegibility;
+  text-align: center;
+
+  @include apply-to(min-width, $full-size) {
+    font-size: 16px;
+  }
+}
+
+a {
+	color: $baseColor;
+  font-weight: bold;
+  text-decoration: none;
+
+  &:hover {
+    color: $darkGray;
+  }
+}
+
+footer a {
+  color: $darkGray;
+  font-size: .85em;
+
+  &:hover {
+    color: $baseColor;
+  }
+}

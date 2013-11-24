@@ -1,0 +1,94 @@
+@import "../_global.scss";
+
+/*=================================
+  Narrow-Size Game Board
+-----------------------------------*/
+
+#game-board {
+  background: #222222 url("../images/game-board-narrow.png") no-repeat center;
+  border: 3px solid rgba(68, 68, 58, .5);
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+  border-radius: 5px;
+  height: 228px;
+  margin: 10px auto;
+  padding: 3px;
+  width: 308px;
+}
+
+#game-board > div {
+  float: left;
+  height: 44px;
+  width: 60px;
+}
+
+.game-board-x {
+  margin-top: 8px;
+}
+.game-board-o {
+  margin-top: 8px;
+}
+
+.xtra-margin-left {
+  margin-left: 2px;
+}
+.xtra-margin-top {
+  margin-top: 2px;
+}
+.xtra-margin {
+  margin: 2px 0 0 2px;
+}
+
+/*=================================
+  Wide-Size Game Board
+-----------------------------------*/
+
+@include apply-to(min-width, $wide-size) {
+
+  #game-board {
+    background: #222222 url("../images/game-board-wide.png") no-repeat center;
+    height: 260px;
+    margin: 10px auto;
+    width: 348px;
+  }
+
+  #game-board > div {
+    height: 50px;
+    width: 68px;
+  }
+
+  .game-board-x {
+    margin-top: 10px;
+  }
+  .game-board-o {
+    margin-top: 11px;
+  }
+
+}
+
+/*=================================
+  Full-Size Game Board
+-----------------------------------*/
+
+@include apply-to(min-width, $full-size) {
+
+  #game-board {
+    background: #222222 url("../images/game-board.png") no-repeat center;
+    height: 348px;
+    margin: 25px auto;
+    width: 468px;
+  }
+
+  #game-board > div {
+    height: 68px;
+    width: 92px;
+  }
+
+  .game-board-x {
+    margin-top: 19px;
+  }
+  .game-board-o {
+    margin-top: 20px;
+  }
+
+}

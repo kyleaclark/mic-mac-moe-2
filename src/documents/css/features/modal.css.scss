@@ -1,0 +1,66 @@
+@import "../_global.scss";
+
+/*=================================
+  Narrow-Size Modal
+-----------------------------------*/
+
+#overlay {
+  background: $black;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
+  background: rgba($black,.5);
+  bottom: 0px;
+  display: none;
+  left: 0px;
+  position: fixed;
+  right: 0px;
+  top: 0px;
+  z-index: 99;
+}
+
+.modal {
+  background-color: rgba(68,68,58,.5);
+  border: 3px solid rgba(163, 211, 75, .5);
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+  border-radius: 5px;
+  display: none;
+  height: 170px;
+  left: 50%;
+  margin-left: -140px;
+  margin-top: -268px;
+  padding-top: 60px;
+  position: fixed;
+  width: 280px;
+  z-index: 100;
+}
+
+/*=================================
+  Wide-Size Modal
+-----------------------------------*/
+
+@include apply-to(min-width, $wide-size) {
+
+  .modal {
+    height: 200px;
+    margin-left: -165px;
+    margin-top: -318px;
+    width: 330px;
+  }
+
+}
+
+
+/*=================================
+  Full-Size Modal
+-----------------------------------*/
+
+@include apply-to(min-width, $full-size) {
+
+  .modal {
+    height: 240px;
+    margin-left: -200px;
+    margin-top: -400px;
+    width: 400px;
+  }
+
+}
