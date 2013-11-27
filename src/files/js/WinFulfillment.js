@@ -65,7 +65,6 @@ define([
     this.winnerOpts = args;
     this.generateWinnerTemplate(this.winnerOpts);
     this.showWinnerModal();
-    console.log("publish", that.UPDATE_SCORE_EVENT);
     PubSub.publish(that.UPDATE_SCORE_EVENT, [this.winnerOpts]);
   };
 

@@ -60,8 +60,8 @@ define([
         self.onClickEvent(event);
       });
 
-      PubSub.subscribe(that.TOGGLE_TURN_EVENT, function (ev) {
-        self.toggleActivePlayer();
+      PubSub.subscribe(that.TOGGLE_TURN_EVENT, function (event) {
+        self.toggleActivePlayer(event);
       });
     }
 
@@ -154,7 +154,7 @@ define([
   * Update value of next player turn (opposite of current player turn)
   */
   PlayerTurn.prototype.toggleActivePlayer = function () {
-    var 
+    var
       that = this.Class,
       player = this.getPlayer(),
       activeClass = "active";
@@ -178,9 +178,7 @@ define([
       square = event.target.id,
       player = this.getPlayer();
 
-    console.log(square);
-
-    if (this.validate(square)) {
+    if (square !== "" && this.validate(square)) {
       this.render(player, square);
       this.setPlayerOfSquare(square);
       
@@ -216,7 +214,7 @@ define([
   * Reset turn data
   */
   PlayerTurn.prototype.reset = function () {
-    var 
+    var
       that = this.Class,
       currentPlayer = this.getPlayer();
 

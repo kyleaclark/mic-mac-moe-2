@@ -1,9 +1,10 @@
 define([
   "jquery",
+  "underscore",
   "js/utils/Globals",
   "js/utils/Helpers",
   "js/utils/PubSub"
-], function ($, Globals, Helpers, PubSub) {
+], function ($, _, Globals, Helpers, PubSub) {
   "use strict";
 
   /*================================
@@ -44,9 +45,7 @@ define([
   */
 
   PlayerScore.prototype.initOpts = function () {
-    var
-      self = this,
-      instanceOpts;
+    var instanceOpts;
 
     instanceOpts = {
       playerScoreTemplateEl: "[data-template='score']",
@@ -60,7 +59,7 @@ define([
     // Instance properties of options
     this.playerScoreTemplateEl = this.options.playerScoreTemplateEl;
     this.playerXDataEl = this.options.playerXDataEl;
-    this.playerOdataEl = this.options.playerODataEl;
+    this.playerODataEl = this.options.playerODataEl;
   };
 
   /**
@@ -83,10 +82,12 @@ define([
       set: function ($val) { self.$playerEl = $val; }
     };
     this.mutatePlayerXScore = {
+      init: (function () { self.playerXScore = 0; })(),
       get: function () { return self.playerXScore; },
       set: function (val) { self.playerXScore += val; }
     };
-    this.mutatePlayerOcore = {
+    this.mutatePlayerOScore = {
+      init: (function () { self.playerOScore = 0; })(),
       get: function () { return self.playerOScore; },
       set: function (val) { self.playerOScore += val; }
     };
@@ -111,7 +112,7 @@ define([
 
     // Init mutator values
     this.mutatePlayerXScore.set(0);
-    this.mutatePlayerOcore.set(0);
+    this.mutatePlayerOScore.set(0);
     this.mutateScoreIncrementValue.set(1);
   };
 
@@ -120,19 +121,14 @@ define([
   */
 
   PlayerScore.prototype.initBinds = function () {
-    var 
+    var
       self = this,
       that = this.Class;
 
     PubSub.subscribe(that.UPDATE_SCORE_EVENT, function (ev, args) {
-      console.log("subscribe");
       self.onUpdateScoreEvent(ev, args);
     });
   };
-
-  PlayerScore.prototype.setScoreIncrementValue = function (val) {
-    this.setScoreIncrementValue();
-  }
 
   PlayerScore.prototype.onUpdateScoreEvent = function (ev, args) {
     this.playerScoreOpts = args;
@@ -149,7 +145,9 @@ define([
   };
 
   PlayerScore.prototype.updatePlayerData = function () {
-    var 
+    var
+      that = this.Class,
+      scoreIncrementValue = this.mutateScoreIncrementValue.get(),
       player = this.playerScoreOpts.player,
       playerScore,
       $playerEl;
@@ -157,17 +155,17 @@ define([
     this.mutatePlayer.set(player);
 
     if (player === that.X) {
-      this.mutatePlayerXScore.set(this.scoreIncrementValue);
+      this.mutatePlayerXScore.set(scoreIncrementValue);
       playerScore = this.mutatePlayerXScore.get();
       $playerEl = this.$playerXDataEl;
     } else {
-      this.mutatePlayerOScore.set(this.scoreIncrementValue);
+      this.mutatePlayerOScore.set(scoreIncrementValue);
       playerScore = this.mutatePlayerOScore.get();
       $playerEl = this.$playerODataEl;
     }
 
-    this.mutatePlayerSEl.set($playerEl);
     this.mutatePlayerScore.set(playerScore);
+    this.mutatePlayerSEl.set($playerEl);
   };
 
   PlayerScore.prototype.generatePlayerScoreTemplate = function () {
@@ -176,19 +174,15 @@ define([
       template = _.template(templateHtml),
       templateData;
 
-    templateData = this.mut
+    templateData = {
+      score: this.mutatePlayerScore.get()
+    };
 
     this.playerScoreTemplate = template(templateData);
   };
 
   PlayerScore.prototype.renderPlayerScoreTemplate = function () {
-    var that = this.Class;
-
-    if (this.player === that.X) {
-      Helpers.updateHtml(this.$playerXDataEl, this.playerXScore);
-    } else {
-      Helpers.updateHtml(this.$playerODataEl, this.playerOScore);
-    }
+    Helpers.updateHtml(this.mutatePlayerSEl.get(), this.playerScoreTemplate);
   };
 
   /**
