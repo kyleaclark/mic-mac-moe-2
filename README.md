@@ -1,6 +1,6 @@
 # mic-mac-moe
 
-Mic-Mac-Moe.
+Mic-Mac-Moe-Js 2.  Visit http://micmacmoejs.com to play online.
 
 ## Running
 

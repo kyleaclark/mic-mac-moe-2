@@ -5,8 +5,9 @@ define([
   "js/BoardData",
   "js/WinFulfillment",
   "js/WinValidation",
-  "js/PlayerTurn"
-], function ($, Globals, BoardTemplate, BoardData, WinFulfillment, WinValidation, PlayerTurn) {
+  "js/PlayerTurn",
+  "js/PlayerScore"
+], function ($, Globals, BoardTemplate, BoardData, WinFulfillment, WinValidation, PlayerTurn, PlayerScore) {
   "use strict";
 
   function Game(config) {
@@ -36,6 +37,7 @@ define([
       self.winFulfillment = new WinFulfillment();
       self.winValidation = new WinValidation({}, self.boardData);
       self.playerTurn = new PlayerTurn({}, self.boardData);
+      self.PlayerScore = new PlayerScore();
     }
 
     function setBinds() {

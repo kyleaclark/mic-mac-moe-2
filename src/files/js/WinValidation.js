@@ -48,6 +48,7 @@ define([
 
     // Global constants
     that.FULFILL_WIN_EVENT = Globals.FULFILL_WIN_EVENT;
+    that.TOGGLE_TURN_EVENT = Globals.TOGGLE_TURN_EVENT;
 
     // Constants
     that.MATRIX_ROWS = 5;
@@ -299,15 +300,15 @@ define([
     // Set player
     this.setPlayer(player);
 
-    // Run validate procedure and if valid win, return true
+    // Run validate procedure and if valid win
     if (that.validateProcedure.call(this, row, col, rowGroup, colGroup)) {
       winValidationOpts = {
         player: player
       };
       PubSub.publish(that.FULFILL_WIN_EVENT, [winValidationOpts]);
+    } else {
+      PubSub.publish(that.TOGGLE_TURN_EVENT, []);
     }
-    
-    return false;
   };
 
   return WinValidation;

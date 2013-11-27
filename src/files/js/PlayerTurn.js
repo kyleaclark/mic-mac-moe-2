@@ -1,8 +1,9 @@
 define([
   "jquery",
   "js/utils/Globals",
+  "js/utils/Helpers",
   "js/utils/PubSub"
-], function ($, Globals, PubSub) {
+], function ($, Globals, Helpers, PubSub) {
   "use strict";
 
   /**
@@ -13,8 +14,9 @@ define([
       self = this,
       that = PlayerTurn,
       defaults = {
-        gameBoard: "game-board",
-        resetGame: true
+        gameBoardEl: "game-board",
+        playerXDataEl: "[data-player='x']",
+        playerODataEl: "[data-player='o']"
       };
 
     // Global variables
@@ -29,14 +31,18 @@ define([
       // Configurations
       self.defaults = defaults;
       self.options = $.extend({}, defaults, config);
-      self.gameBoard = self.options.gameBoard;
+      self.gameBoardEl = self.options.gameBoardEl;
+      self.playerXDataEl = self.options.playerXDataEl;
+      self.playerODataEl = self.options.playerODataEl;
 
       // Constants
       self.EMPTY = "";
       self.TURN_INCREMENT = 1;
 
       // Variables
-      self.$boardID = $("#" + self.gameBoard);
+      self.$boardID = $("#" + self.gameBoardEl);
+      self.$playerXDataEl = $(self.playerXDataEl);
+      self.$playerODataEl = $(self.playerODataEl);
       self.player = that.DEFAULT_PLAYER;
       self.numberOfTurns = 0;
       self.turnSquare = "";
@@ -45,7 +51,6 @@ define([
     // Instance objects
     function initObjects() {
       self.Class = that;
-      self.PubSub = PubSub;
       self.BoardData = BoardData;
     }
 
@@ -53,6 +58,10 @@ define([
     function setBinds() {
       self.$boardID.on(self.CLICK, function (event) {
         self.onClickEvent(event);
+      });
+
+      PubSub.subscribe(that.TOGGLE_TURN_EVENT, function (event) {
+        self.toggleActivePlayer(event);
       });
     }
 
@@ -64,6 +73,8 @@ define([
 
   (function initStaticVars() {
     var that = PlayerTurn;
+
+    that.TOGGLE_TURN_EVENT = Globals.TOGGLE_TURN_EVENT;
 
     that.PLAYER_X = {
       src: "images/player-x.png",
@@ -87,7 +98,7 @@ define([
     var playerOfSquare = this.getPlayerOfSquare(square);
 
     // Is valid if square is in an empty board square
-    if (square !== this.gameBoard && playerOfSquare === this.EMPTY) {
+    if (square !== this.gameBoardEl && playerOfSquare === this.EMPTY) {
       return true;
     }
 
@@ -142,12 +153,19 @@ define([
   /**
   * Update value of next player turn (opposite of current player turn)
   */
-  PlayerTurn.prototype.updateNextPlayerTurn = function (val) {
-    var that = this.Class;
+  PlayerTurn.prototype.toggleActivePlayer = function () {
+    var
+      that = this.Class,
+      player = this.getPlayer(),
+      activeClass = "active";
 
-    if (val === that.X) {
+    if (player === that.X) {
+      Helpers.removeClass(this.$playerXDataEl, activeClass);
+      Helpers.addClass(this.$playerODataEl, activeClass);
       this.setPlayer(that.O);
     } else {
+      Helpers.removeClass(this.$playerODataEl, activeClass);
+      Helpers.addClass(this.$playerXDataEl, activeClass);
       this.setPlayer(that.X);
     }
   };
@@ -160,17 +178,18 @@ define([
       square = event.target.id,
       player = this.getPlayer();
 
-    if (this.validate(square)) {
+    if (square !== "" && this.validate(square)) {
       this.render(player, square);
       this.setPlayerOfSquare(square);
       
       if (this.numberOfTurns > 3) {
         PubSub.publish(this.VALIDATE_WIN_EVENT, [square, player]);
+      } else {
+        this.toggleActivePlayer();
       }
 
-      this.updateNextPlayerTurn(player);
       this.setNumberOfTurns(this.TURN_INCREMENT);
-      this.PubSub.publish(this.SET_TURN_EVENT, [player, square]);
+      PubSub.publish(this.SET_TURN_EVENT, [player, square]);
     }
   };
 
@@ -195,9 +214,13 @@ define([
   * Reset turn data
   */
   PlayerTurn.prototype.reset = function () {
-    var that = this.Class;
+    var
+      that = this.Class,
+      currentPlayer = this.getPlayer();
 
-    this.setPlayer(that.DEFAULT_PLAYER);
+    if (currentPlayer !== that.DEFAULT_PLAYER) {
+      this.toggleActivePlayer();
+    }
   };
 
   return PlayerTurn;

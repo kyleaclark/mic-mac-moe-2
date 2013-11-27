@@ -2,19 +2,34 @@
 title: "Mic Mac Moe"
 ---
 
-<div id="game-container">
+<section>
   <img id="logo" src="images/logo-mic-mac-moe-js.png" alt="Mic Mac Moe" />
 
   <div id="game-board"></div>
 
-  <button class="btn" data-game="playAgain">Reset Game</button>
-</div>
+  <div id="scoreboard">
+  	
+	<div id="player-scores">
+  	  <p class="big-caps active" data-player="x"><strong>Player X<br /><span data-score="x">0</span></strong></p>
+  	  <p class="big-caps" data-player="o"><strong>Player O<br /><span data-score="o">0</span></strong></p>
+  	</div>
+
+  	<div class="clear"></div>
+
+  	<button class="btn" data-game="playAgain">Reset Game</button>
+
+  	<p class="tiny-caps text-underline no-margin-bottom"><strong>3 in a row to win</strong></p>
+  </div>
+
+</section>
 
 <div id="overlay"></div>
   
 <div class="modal" data-modal="winner">
   <button class="btn" data-game="playAgain">Play Again</button>
 </div>
+
+<script type="text/template" data-template="score"><%= score %></script>
 
 <script type="text/template" data-template="gameBoard"><div id="<%= id %>"<% if (typeof styles !== "undefined") { %> class="<%= styles %>"<% } %>></div></script>
 
