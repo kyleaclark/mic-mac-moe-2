@@ -50,8 +50,8 @@ define([
 
     instanceOpts = {
       playerScoreTemplateEl: "[data-template='score']",
-      playerXDataEl: "[player-score='x']",
-      playerODataEl: "[player-score='o']"
+      playerXDataEl: "[data-score='x']",
+      playerODataEl: "[data-score='o']"
     };
 
     // Instance options
@@ -73,6 +73,14 @@ define([
     this.mutatePlayer = {
       get: function () { return self.player; },
       set: function (val) { self.player = val; }
+    };
+    this.mutatePlayerScore = {
+      get: function () { return self.playerScore; },
+      set: function (val) { self.playerScore = val; }
+    };
+    this.mutatePlayerSEl = {
+      get: function () { return self.$playerEl; },
+      set: function ($val) { self.$playerEl = $val; }
     };
     this.mutatePlayerXScore = {
       get: function () { return self.playerXScore; },
@@ -97,7 +105,7 @@ define([
     this.Class = PlayerScore;
 
     // Instance variables not specific to instance options
-    self.$playerScoreTemplateEl = $(this.playerScoreTemplateEl);
+    this.$playerScoreTemplateEl = $(this.playerScoreTemplateEl);
     this.$playerXDataEl = $(this.playerXDataEl);
     this.$playerODataEl = $(this.playerODataEl);
 
@@ -127,17 +135,11 @@ define([
   }
 
   PlayerScore.prototype.onUpdateScoreEvent = function (ev, args) {
-    console.log("update");
     this.playerScoreOpts = args;
-    this.updatePlayer();
     this.updateIncrementScore();
-    this.updatePlayerScore();
+    this.updatePlayerData();
     this.generatePlayerScoreTemplate();
     this.renderPlayerScoreTemplate();
-  };
-
-  PlayerScore.prototype.updatePlayer = function () {
-    this.mutatePlayer.set(this.playerScoreOpts.player);
   };
 
   PlayerScore.prototype.updateIncrementScore = function () {
@@ -146,20 +148,35 @@ define([
     }
   };
 
-  PlayerScore.prototype.updatePlayerScore = function () {
-    var that = this.Class;
+  PlayerScore.prototype.updatePlayerData = function () {
+    var 
+      player = this.playerScoreOpts.player,
+      playerScore,
+      $playerEl;
 
-    if (this.player === that.X) {
+    this.mutatePlayer.set(player);
+
+    if (player === that.X) {
       this.mutatePlayerXScore.set(this.scoreIncrementValue);
+      playerScore = this.mutatePlayerXScore.get();
+      $playerEl = this.$playerXDataEl;
     } else {
       this.mutatePlayerOScore.set(this.scoreIncrementValue);
+      playerScore = this.mutatePlayerOScore.get();
+      $playerEl = this.$playerODataEl;
     }
+
+    this.mutatePlayerSEl.set($playerEl);
+    this.mutatePlayerScore.set(playerScore);
   };
 
-  PlayerScore.prototype.generatePlayerScoreTemplate = function (templateData) {
+  PlayerScore.prototype.generatePlayerScoreTemplate = function () {
     var
       templateHtml = this.$playerScoreTemplateEl.html(),
-      template = _.template(templateHtml);
+      template = _.template(templateHtml),
+      templateData;
+
+    templateData = this.mut
 
     this.playerScoreTemplate = template(templateData);
   };
