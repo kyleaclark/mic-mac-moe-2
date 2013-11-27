@@ -6,7 +6,7 @@ body {
     -webkit-font-smoothing: antialiased;
        -moz-font-smoothing: antialiased;
             font-smoothing: antialiased;
-  font-family: "Helvetica Neue", Helvetica, "Arimo", Arial, sans-serif;
+  font-family: "Arimo", "Helvetica Neue", Helvetica, Arial, sans-serif;
   text-rendering: optimizeLegibility;
   text-align: center;
 
@@ -27,9 +27,23 @@ a {
 
 footer a {
   color: $darkGray;
-  font-size: .85em;
+  font-size: .75em;
 
   &:hover {
     color: $baseColor;
   }
+}
+
+.text-underline {
+  text-decoration: underline;
+}
+
+.tiny-caps {
+  font-size: .75em;
+  text-transform: uppercase;
+}
+
+.big-caps {
+  font-size: 1.15em;
+  text-transform: uppercase;
 }

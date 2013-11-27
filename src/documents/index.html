@@ -2,13 +2,27 @@
 title: "Mic Mac Moe"
 ---
 
-<div id="game-container">
+<section>
   <img id="logo" src="images/logo-mic-mac-moe-js.png" alt="Mic Mac Moe" />
 
   <div id="game-board"></div>
 
-  <button class="btn" data-game="playAgain">Reset Game</button>
-</div>
+  <div id="scoreboard">
+  	
+	<section>
+  	  <p id="player-x" class="big-caps active"><strong>Player X</strong></p>
+  	  <p id="player-o" class="big-caps"><strong>Player O</strong></p>
+  	</section>
+
+  	<div class="clear"></div>
+
+  	<button class="btn" data-game="playAgain">Reset Game</button>
+
+  	<p class="tiny-caps text-underline no-margin-bottom"><strong>3 in a row to win</strong></p>
+  	
+  </div>
+
+</section>
 
 <div id="overlay"></div>
   
