@@ -18,11 +18,13 @@
   }
 }
 
-#player-x, #player-o {
-  color: $white;
-  color: rgba($white, 0.8);
-  display: inline-block;
-  margin-top: 5px;
-  text-shadow: 1px 2px 2px $black, 0 0 0 $black, 1px 2px 2px $black;
-  width: 48%;
+#player-scores {
+  p {
+    color: $white;
+    color: rgba($white, 0.8);
+    display: inline-block;
+    margin-top: 5px;
+    text-shadow: 1px 2px 2px $black, 0 0 0 $black, 1px 2px 2px $black;
+    width: 48%;
+  }
 }

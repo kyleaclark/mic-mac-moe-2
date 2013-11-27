@@ -1,0 +1,182 @@
+define([
+  "jquery",
+  "js/utils/Globals",
+  "js/utils/Helpers",
+  "js/utils/PubSub"
+], function ($, Globals, Helpers, PubSub) {
+  "use strict";
+
+  /*================================
+    Constructor
+  ----------------------------------*/
+
+  /**
+  * UnbsubscribeForm object constructor
+  */
+
+  function PlayerScore(opts) {
+    this.constructorOpts = opts;
+    this.initOpts();
+    this.initMutators();
+    this.initVars();
+    this.initBinds();
+  }
+
+  /*================================
+    Static Methods and Properties
+  ----------------------------------*/
+
+  (function initStatic() {
+    var that = PlayerScore;
+
+    that.UPDATE_SCORE_EVENT = Globals.UPDATE_SCORE_EVENT;
+
+    that.X = "X";
+    that.O = "O";
+  })();
+
+  /*================================
+    Instance Methods and Properties
+  ----------------------------------*/
+
+  /**
+  * Initialize instance options 
+  */
+
+  PlayerScore.prototype.initOpts = function () {
+    var
+      self = this,
+      instanceOpts;
+
+    instanceOpts = {
+      playerScoreTemplateEl: "[data-template='score']",
+      playerXDataEl: "[player-score='x']",
+      playerODataEl: "[player-score='o']"
+    };
+
+    // Instance options
+    this.options = $.extend({}, instanceOpts, this.constructorOpts);
+
+    // Instance properties of options
+    this.playerScoreTemplateEl = this.options.playerScoreTemplateEl;
+    this.playerXDataEl = this.options.playerXDataEl;
+    this.playerOdataEl = this.options.playerODataEl;
+  };
+
+  /**
+  * Initialize instance mutator fields
+  */
+
+  PlayerScore.prototype.initMutators = function () {
+    var self = this;
+
+    this.mutatePlayer = {
+      get: function () { return self.player; },
+      set: function (val) { self.player = val; }
+    };
+    this.mutatePlayerXScore = {
+      get: function () { return self.playerXScore; },
+      set: function (val) { self.playerXScore += val; }
+    };
+    this.mutatePlayerOcore = {
+      get: function () { return self.playerOScore; },
+      set: function (val) { self.playerOScore += val; }
+    };
+    this.mutateScoreIncrementValue = {
+      get: function () { return self.scoreIncrementValue; },
+      set: function (val) { self.scoreIncrementValue = val; }
+    };
+  };
+
+  /**
+  * Initialize instance variables
+  */
+
+  PlayerScore.prototype.initVars = function () {
+    // Instance property of static Class type
+    this.Class = PlayerScore;
+
+    // Instance variables not specific to instance options
+    self.$playerScoreTemplateEl = $(this.playerScoreTemplateEl);
+    this.$playerXDataEl = $(this.playerXDataEl);
+    this.$playerODataEl = $(this.playerODataEl);
+
+    // Init mutator values
+    this.mutatePlayerXScore.set(0);
+    this.mutatePlayerOcore.set(0);
+    this.mutateScoreIncrementValue.set(1);
+  };
+
+  /**
+  * Initialize instance event binds
+  */
+
+  PlayerScore.prototype.initBinds = function () {
+    var 
+      self = this,
+      that = this.Class;
+
+    PubSub.subscribe(that.UPDATE_SCORE_EVENT, function (ev, args) {
+      console.log("subscribe");
+      self.onUpdateScoreEvent(ev, args);
+    });
+  };
+
+  PlayerScore.prototype.setScoreIncrementValue = function (val) {
+    this.setScoreIncrementValue();
+  }
+
+  PlayerScore.prototype.onUpdateScoreEvent = function (ev, args) {
+    console.log("update");
+    this.playerScoreOpts = args;
+    this.updatePlayer();
+    this.updateIncrementScore();
+    this.updatePlayerScore();
+    this.generatePlayerScoreTemplate();
+    this.renderPlayerScoreTemplate();
+  };
+
+  PlayerScore.prototype.updatePlayer = function () {
+    this.mutatePlayer.set(this.playerScoreOpts.player);
+  };
+
+  PlayerScore.prototype.updateIncrementScore = function () {
+    if (typeof this.playerScoreOpts.incrementValue !== "undefined") {
+      this.mutateScoreIncrementValue.set(this.playerScoreOpts.incrementValue);
+    }
+  };
+
+  PlayerScore.prototype.updatePlayerScore = function () {
+    var that = this.Class;
+
+    if (this.player === that.X) {
+      this.mutatePlayerXScore.set(this.scoreIncrementValue);
+    } else {
+      this.mutatePlayerOScore.set(this.scoreIncrementValue);
+    }
+  };
+
+  PlayerScore.prototype.generatePlayerScoreTemplate = function (templateData) {
+    var
+      templateHtml = this.$playerScoreTemplateEl.html(),
+      template = _.template(templateHtml);
+
+    this.playerScoreTemplate = template(templateData);
+  };
+
+  PlayerScore.prototype.renderPlayerScoreTemplate = function () {
+    var that = this.Class;
+
+    if (this.player === that.X) {
+      Helpers.updateHtml(this.$playerXDataEl, this.playerXScore);
+    } else {
+      Helpers.updateHtml(this.$playerODataEl, this.playerOScore);
+    }
+  };
+
+  /**
+  * Return Class object
+  */
+
+  return PlayerScore;
+});

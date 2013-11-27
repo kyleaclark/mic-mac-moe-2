@@ -56,20 +56,25 @@ define([
     var that = WinFulfillment;
 
     that.FULFILL_WIN_EVENT = Globals.FULFILL_WIN_EVENT;
+    that.UPDATE_SCORE_EVENT = Globals.UPDATE_SCORE_EVENT;
   })();
 
   WinFulfillment.prototype.onFulfillWinEvent = function (ev, args) {
+    var that = this.Class;
+
     this.winnerOpts = args;
     this.generateWinnerTemplate(this.winnerOpts);
     this.showWinnerModal();
+    console.log("publish", that.UPDATE_SCORE_EVENT);
+    PubSub.publish(that.UPDATE_SCORE_EVENT, [this.winnerOpts]);
   };
 
-  WinFulfillment.prototype.generateWinnerTemplate = function (data) {
+  WinFulfillment.prototype.generateWinnerTemplate = function (templateData) {
     var
       templateHtml = this.$winnerTemplateEl.html(),
       template = _.template(templateHtml);
 
-    this.winnerTemplate = template(data);
+    this.winnerTemplate = template(templateData);
   };
 
   WinFulfillment.prototype.showWinnerModal = function () {

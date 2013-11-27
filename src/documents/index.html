@@ -9,17 +9,16 @@ title: "Mic Mac Moe"
 
   <div id="scoreboard">
   	
-	<section>
-  	  <p id="player-x" class="big-caps active"><strong>Player X</strong></p>
-  	  <p id="player-o" class="big-caps"><strong>Player O</strong></p>
-  	</section>
+	<div id="player-scores">
+  	  <p class="big-caps active" data-player="x"><strong>Player X<br /><span data-score="x">0</span></strong></p>
+  	  <p class="big-caps" data-player="o"><strong>Player O<br /><span data-score="y">0</span></strong></p>
+  	</div>
 
   	<div class="clear"></div>
 
   	<button class="btn" data-game="playAgain">Reset Game</button>
 
   	<p class="tiny-caps text-underline no-margin-bottom"><strong>3 in a row to win</strong></p>
-  	
   </div>
 
 </section>
@@ -29,6 +28,8 @@ title: "Mic Mac Moe"
 <div class="modal" data-modal="winner">
   <button class="btn" data-game="playAgain">Play Again</button>
 </div>
+
+<script type="text/template" data-template="score"><%= score %></script>
 
 <script type="text/template" data-template="gameBoard"><div id="<%= id %>"<% if (typeof styles !== "undefined") { %> class="<%= styles %>"<% } %>></div></script>
 
