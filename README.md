@@ -1,6 +1,15 @@
-# mic-mac-moe
+mic-mac-moe-2
+============
 
-Mic-Mac-Moe-Js 2.  Visit http://micmacmoejs.com to play online.
+##Authored Date
+
+August 2013
+
+(last edit: November 2013)
+
+##Overview
+
+Created as a personal application.  Play a web-based game of mic-mac-moe-2 (5x5 grid of tic-tac-toe).  Visit http://micmacmoejs.com to play online.
 
 ## Running
 
