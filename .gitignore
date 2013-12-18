@@ -1,3 +1,4 @@
+# File Ignores
 src/files/js/output.js
 *.psd
 *.class
