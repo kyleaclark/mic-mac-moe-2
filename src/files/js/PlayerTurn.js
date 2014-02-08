@@ -182,11 +182,7 @@ define([
       this.render(player, square);
       this.setPlayerOfSquare(square);
       
-      if (this.numberOfTurns > 3) {
-        PubSub.publish(this.VALIDATE_WIN_EVENT, [square, player]);
-      } else {
-        this.toggleActivePlayer();
-      }
+      PubSub.publish(this.VALIDATE_WIN_EVENT, [square, player]);
 
       this.setNumberOfTurns(this.TURN_INCREMENT);
       PubSub.publish(this.SET_TURN_EVENT, [player, square]);

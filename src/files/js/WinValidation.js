@@ -14,34 +14,9 @@ define([
       self.VALIDATE_WIN_EVENT = Globals.VALIDATE_WIN_EVENT;
     }
 
-    function initVars() {
-      self.defaults = defaults;
-      self.options = $.extend({}, defaults, config);
-
-      self.index = 0;
-      self.row = 0;
-      self.col = 0;
-      self.rowGroup = {};
-      self.colGroup = {};
-      self.player = "";
-      self.matrixValues = [];
-    }
-
     function initObjects() {
       self.Class = WinValidation;
       self.BoardData = BoardData;
-    }
-
-    function initMatrixValues = function () {
-      var 
-        that = this.Class,
-        matrixMax = that.MATRIX_MAX,
-        matrixLength = (matrixMax * matrixMax) - 1,
-        index = 0;
-
-      for (index < matrixLength; index++) {
-        squareMatrix[index] = null;
-      }
     }
 
     function setBinds() {
@@ -51,10 +26,10 @@ define([
     }
 
     initGlobals();
-    initVars();
     initObjects();
-    initMatrixValues();
     setBinds();
+    console.log(this);
+    this.init();
   }
 
   (function initStatic() {
@@ -67,14 +42,33 @@ define([
     // Constants
     that.MATRIX_MIN = 0;
     that.MATRIX_MAX = 5;
+    that.MIN_TURNS_TO_WIN = 7;
     that.ONE = 1;
     that.TWO = 2;
     that.THREE = 3;
 
     that.isValidSquare = function (row, col) {
-      if (row >= this.MATRIX_MAX || row < this.MATRIX_MIN || col >= this.MATRIX_MAX || col < this.MATRIX_MIN) {
-        return false;
+      if (row < that.MATRIX_MAX || row >= that.MATRIX_MIN || col < that.MATRIX_MAX || col >= that.MATRIX_MIN) {
+        return true;
       }
+
+      return false;
+    };
+
+    that.calculateSquareIndex = function (row, col) {
+      return (row * that.MATRIX_MAX) + col;
+    };
+
+    that.publishFulfillWinEvent = function (player) {
+      var winValidationOpts = {
+        player: player
+      };
+
+      PubSub.publish(that.FULFILL_WIN_EVENT, [winValidationOpts]);
+    };
+
+    that.publishToggleTurnEvent = function () {
+      PubSub.publish(that.TOGGLE_TURN_EVENT, []);
     };
   })();
 
@@ -82,14 +76,25 @@ define([
   * Instance - Getters & Setters
   */
 
+  /* Get .player */
+  WinValidation.prototype.getPlayer = function () {
+    return this.player;
+  };
+
+  /* Set .player */
+  WinValidation.prototype.setPlayer = function (val) {
+    this.player = val;
+  };
+
   /* Get .row */
   WinValidation.prototype.getRow = function () {
     return this.row;
   };
 
   /* Set .row */
-  WinValidation.prototype.setRow = function (square) {
-    this.row = this.BoardData.getRowOfSquare(square);
+  WinValidation.prototype.setRow = function (squareEl) {
+    console.log("this : ", this);
+    this.row = this.BoardData.getRowOfSquare(squareEl);
   };
 
   /* Get .col */
@@ -98,21 +103,31 @@ define([
   };
 
   /* Set .col */
-  WinValidation.prototype.setCol = function (square) {
-    this.col = this.BoardData.getColOfSquare(square);
+  WinValidation.prototype.setCol = function (squareEl) {
+    this.col = this.BoardData.getColOfSquare(squareEl);
   };
 
-  /* Set .col */
-  WinValidation.prototype.getPlayer = function () {
-    return this.player;
+  /* Get .index */
+  WinValidation.prototype.getSquareIndex = function () {
+    return this.squareIndex;
   };
 
-  /* Set .col */
-  WinValidation.prototype.setPlayer = function (val) {
-    this.player = val;
+  /* Get .index */
+  WinValidation.prototype.setSquareIndex = function (squareEl) {
+    this.squareIndex = this.BoardData.getIndexOfSquare(squareEl);
   };
 
-  /* Set .rowGroup */
+  /* Get .rowGroup */
+  WinValidation.prototype.getRowGroup = function () {
+    return this.rowGroup;
+  };
+
+  /* Get .colGroup */
+  WinValidation.prototype.getColGroup = function () {
+    return this.colGroup;
+  };
+
+  /* Update .rowGroup */
   WinValidation.prototype.updateRowGroup = function () {
     var 
       that = this.Class,
@@ -128,7 +143,7 @@ define([
     };
   };
 
-  /* Set .colGroup */
+  /* Update .colGroup */
   WinValidation.prototype.updateColGroup = function () {
     var 
       that = this.Class,
@@ -146,12 +161,11 @@ define([
 
   WinValidation.prototype.updateMatrixValues = function () {
     var
-      row = this.getRow(),
-      col = this.getCol(),
+      that = this.Class,
       player = this.getPlayer(),
-      square = row + col;
+      squareIndex = this.getSquareIndex();
 
-    this.matrixValues[square] = player;
+    this.matrixValues[squareIndex] = player;
   };
 
 
@@ -166,28 +180,58 @@ define([
   };
   */
 
-  /* Get .index
-  WinValidation.prototype.getIndex = function () {
-    return this.index;
+  WinValidation.prototype.init = function () {
+    var self = this;
+
+    function initVars() {
+      self.row = 0;
+      self.col = 0;
+      self.squareIndex = 0;
+      self.rowGroup = {};
+      self.colGroup = {};
+      self.player = "";
+      self.numOfTurns = 0;
+      self.matrixValues = [];
+    }
+
+    function initMatrixValues() {
+      var 
+        that = self.Class,
+        matrixMax = that.MATRIX_MAX,
+        matrixLength = (matrixMax * matrixMax) - 1,
+        index = 0;
+
+      for (; index < matrixLength; index++) {
+        self.matrixValues[index] = null;
+      }
+    }
+
+    initVars();
+    initMatrixValues();
   };
-  ///
 
-  /* Get .index
-  WinValidation.prototype.setIndex = function (square) {
-    this.index = this.BoardData.getIndexOfSquare(square);
+  WinValidation.prototype.validate = function (squareEl, player) {
+    var that = this.Class;
+
+    this.updateValidationData(squareEl, player);
+
+    if (this.numOfTurns >= that.MIN_TURNS_TO_WIN) {
+      this.manageWinValidation();
+    } else {
+      that.publishToggleTurnEvent();
+    }
   };
-  */
 
+  WinValidation.prototype.updateValidationData = function (squareEl, player) {
+    // Increase number of turns
+    this.numOfTurns += 1;
 
-  WinValidation.prototype.validate = function (square, player) {
-    this.updateValidationData(square, player);
-    this.manageWinValidation();
-  };
-
-  WinValidation.prototype.updateValidationData = function (square, player) {
     // Set row & col
-    this.setRow(square);
-    this.setCol(square);
+    this.setRow(squareEl);
+    this.setCol(squareEl);
+
+    // Set squareIndex
+    this.setSquareIndex(squareEl);
 
     // Set player
     this.setPlayer(player);
@@ -200,29 +244,33 @@ define([
     this.updateColGroup();
   };
 
-  WinValidation.prototype.manageWinValidation = function (valid) {
+  WinValidation.prototype.manageWinValidation = function () {
     var 
-      player = this.getPlayer(),
-      winValidationOpts = {
-        player: player
-      };
-
+      that = this.Class,
+      player = this.getPlayer();
+      
     if (this.verifyIsWin()) {
-      PubSub.publish(that.FULFILL_WIN_EVENT, [winValidationOpts]);
+      that.publishFulfillWinEvent(player);
     } else {
-      PubSub.publish(that.TOGGLE_TURN_EVENT, []);
+      that.publishToggleTurnEvent();
     }
   };
 
   /* Verify vertical, horizontal, and Diagonal win possibilities */
   WinValidation.prototype.verifyIsWin = function () {
-    if (this.verifyVerticalWin()) {
+    var
+      row = this.getRow(),
+      col = this.getCol(),
+      rowGroup = this.getRowGroup(),
+      colGroup = this.getColGroup();
+
+    if (this.verifyVerticalWin(rowGroup, col)) {
       return true;
-    } else if (this.verifyHorizontalWin()) {
+    } else if (this.verifyHorizontalWin(row, colGroup)) {
       return true;
-    } else if (this.verifyDiagonalUpLeftWin()) {
+    } else if (this.verifyDiagonalUpLeftWin(rowGroup, colGroup)) {
       return true;
-    } else if (this.verifyDiagonalUpRightWin()) {
+    } else if (this.verifyDiagonalUpRightWin(rowGroup, colGroup)) {
       return true;
     }
 
@@ -232,10 +280,13 @@ define([
   WinValidation.prototype.isSquarePlayerMatch = function (row, col) {
     var
       that = this.Class, 
-      square = row + col,
+      squareIndex = that.calculateSquareIndex(row, col),
       player = this.getPlayer();
 
-    if (that.isSquareValid(row, col) && this.matrixSquareValue[square] === player) {
+    console.log(row, col, that.isValidSquare(row, col));
+    console.log(squareIndex, this.matrixValues[squareIndex], player);
+
+    if (that.isValidSquare(row, col) && this.matrixValues[squareIndex] === player) {
       return true;
     }
 
@@ -257,13 +308,14 @@ define([
       // -> else if : verify 3up && verify 2up
     // -> else if : verify 3down && 2down && 1down
 
-    if (verify(row.oneUp, col)) {
-      if (verify(row.oneDown, col) && (verify(row.twoDown, col) || verify(row.twoUp, col))) {
+    if (verify.call(this, row.oneUp, col)) {
+      console.log("oneUp");
+      if (verify.call(this, row.oneDown, col) && (verify.call(this, row.twoDown, col) || verify.call(this, row.twoUp, col))) {
         return true;
-      } else if (verify(row.threeUp, col) && verify(row.twoUp, col)) {
+      } else if (verify.call(this, row.threeUp, col) && verify.call(this, row.twoUp, col)) {
         return true;
       }
-    } else if (verify(threeDown, col) && verify(twoDown, col) && verify(oneDown, col)) {
+    } else if (verify.call(this, row.threeDown, col) && verify.call(this, row.twoDown, col) && verify.call(this, row.oneDown, col)) {
       return true;
     }
 
@@ -329,6 +381,10 @@ define([
     
 
     return false;
+  };
+
+  WinValidation.prototype.reset = function () {
+    this.init();
   };
 
   return WinValidation;

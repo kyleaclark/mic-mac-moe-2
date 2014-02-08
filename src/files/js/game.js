@@ -65,6 +65,7 @@ define([
   Game.prototype.playAgain = function () {
     this.boardData.reset();
     this.playerTurn.reset();
+    this.winValidation.reset();
     this.winFulfillment.hideWinnerModal();
     this.playNew();
   };

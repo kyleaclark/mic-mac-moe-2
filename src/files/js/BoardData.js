@@ -68,7 +68,7 @@ define([
 
     that.procureBoardSquareObj = function (row, col) {
       var
-        index = row + col,
+        index = (row * 5) + col,
         square = that.procureSquareString(row, col),
         boardSquareObj = {
           index: index,
