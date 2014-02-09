@@ -32,6 +32,7 @@ define([
       self.$winnerTemplateEl = $(self.winnerTemplateEl);
       self.$winnerModal = $(self.winnerModal);
       self.playerWinnerEl = "#player-winner";
+      self.toggleState = null;
     }
 
     // Instance objects
@@ -55,6 +56,9 @@ define([
   (function initStaticVars() {
     var that = WinFulfillment;
 
+    that.TOGGLE_ON = "on";
+    that.TOGGLE_OFF = "off";
+    that.TOGGLE_EMPTY = null;
     that.FULFILL_WIN_EVENT = Globals.FULFILL_WIN_EVENT;
     that.UPDATE_SCORE_EVENT = Globals.UPDATE_SCORE_EVENT;
   })();
@@ -64,7 +68,7 @@ define([
 
     this.winnerOpts = args;
     this.generateWinnerTemplate(this.winnerOpts);
-    this.showWinnerModal();
+    this.toggle(that.TOGGLE_ON);
     PubSub.publish(that.UPDATE_SCORE_EVENT, [this.winnerOpts]);
   };
 
@@ -76,7 +80,23 @@ define([
     this.winnerTemplate = template(templateData);
   };
 
-  WinFulfillment.prototype.showWinnerModal = function () {
+  WinFulfillment.prototype.toggle = function (toggleState) {
+    var that = this.Class;
+
+    if (typeof toggleState !== "undefined") {
+      this.toggleState = toggleState;
+    }
+
+    if (this.toggleState === that.TOGGLE_ON) {
+      this.show();
+      this.toggleState = that.TOGGLE_OFF;
+    } else if (this.toggleState === that.TOGGLE_OFF) {
+      this.hide();
+      this.toggleState = that.TOGGLE_EMPTY;
+    }
+  };
+
+  WinFulfillment.prototype.show = function () {
     var self = this;
 
     this.$winnerModal.prepend(this.winnerTemplate);
@@ -89,7 +109,7 @@ define([
     this.$playerWinnerEl = $(this.playerWinnerEl);
   };
 
-  WinFulfillment.prototype.hideWinnerModal = function () {
+  WinFulfillment.prototype.hide = function () {
     var self = this;
 
     this.$overlayEl.hide();

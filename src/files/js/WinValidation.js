@@ -6,24 +6,10 @@ define([
   "use strict";
 
   function WinValidation(config, BoardData) {
-    var
-      self = this,
-      defaults = {};
+    var self = this;
 
     function initGlobals() {
       self.VALIDATE_WIN_EVENT = Globals.VALIDATE_WIN_EVENT;
-    }
-
-    function initVars() {
-      self.defaults = defaults;
-      self.options = $.extend({}, defaults, config);
-
-      self.index = 0;
-      self.row = 0;
-      self.col = 0;
-      self.rowGroup = {};
-      self.colGroup = {};
-      self.player = "";
     }
 
     function initObjects() {
@@ -38,9 +24,9 @@ define([
     }
 
     initGlobals();
-    initVars();
     initObjects();
     setBinds();
+    this.init();
   }
 
   (function initStatic() {
@@ -51,151 +37,50 @@ define([
     that.TOGGLE_TURN_EVENT = Globals.TOGGLE_TURN_EVENT;
 
     // Constants
-    that.MATRIX_ROWS = 5;
+    that.MATRIX_MIN = 0;
+    that.MATRIX_MAX = 5;
+    that.MIN_TURNS_TO_WIN = 7;
     that.ONE = 1;
     that.TWO = 2;
+    that.THREE = 3;
 
-    /* Validate win possibility procedures */
-    that.validateProcedure = function (row, col, rowGroup, colGroup) {
-      var
-        self = that.validateProcedure,
-        sub = self;
-
-      /* Verify vertical, horizontal, and Diagonal win possibilities */
-      sub.verify = function () {
-        if (sub.verifyVerticalWin.call(this, rowGroup, col)) {
-          return true;
-        } else if (sub.verifyHorizontalWin.call(this, row, colGroup)) {
-          return true;
-        } else if (sub.verifyDiagonalWin.call(this, rowGroup, colGroup)) {
-          return true;
-        }
-
+    that.isValidSquare = function (row, col) {
+      if (row >= that.MATRIX_MAX || row < that.MATRIX_MIN || col >= that.MATRIX_MAX || col < that.MATRIX_MIN) {
         return false;
-      };
+      }
 
-      sub.verifyValidSquare = function (row, col) {
-        if (row === that.MATRIX_ROWS || col === that.MATRIX_ROWS) {
-          return false;
-        } else if (row < 0 || col < 0) {
-          return false;
-        }
-
-        return true;
-      };
-
-      sub.verifyPlayerMatch = function (row, col) {
-        var square;
-
-        if (!self.verifyValidSquare(row, col)) {
-          return false;
-        }
-
-        square = this.getSquareOfRowCol(row, col);
-
-        if (this.getPlayerOfSquare(square) === this.getPlayer()) {
-          return true;
-        }
-
-        return false;
-      };
-
-      /* Validate procedure subject method to verify vertical win */
-      sub.verifyVerticalWin = function (row, col) {
-        var verifyPlayerMatch = sub.verifyPlayerMatch;
-
-        if (verifyPlayerMatch.call(this, row.upOne, col) && (verifyPlayerMatch.call(this, row.upTwo, col) || verifyPlayerMatch.call(this, row.downOne, col))) {
-          return true;
-        } else if (verifyPlayerMatch.call(this, row.downOne, col) && verifyPlayerMatch.call(this, row.downTwo, col)) {
-          return true;
-        }
-
-        return false;
-      };
-
-      /* Validate procedure subject method to verify horizontal win */
-      sub.verifyHorizontalWin = function (row, col) {
-        var verifyPlayerMatch = sub.verifyPlayerMatch;
-
-        if (verifyPlayerMatch.call(this, row, col.leftOne) && (verifyPlayerMatch.call(this, row, col.leftTwo) || verifyPlayerMatch.call(this, row, col.rightOne))) {
-          return true;
-        } else if (verifyPlayerMatch.call(this, row, col.rightOne) && verifyPlayerMatch.call(this, row, col.rightTwo)) {
-          return true;
-        }
-
-        return false;
-      };
-
-      /* Validate procedure subject method to verify diagonal win */
-      sub.verifyDiagonalWin = function (row, col) {
-        if (self.verifyDiagonalUpLeft.call(this, row, col) || self.verifyDiagonalDownLeft.call(this, row, col) || self.verifyDiagonalUpRight.call(this, row, col) || self.verifyDiagonalDownRight.call(this, row, col)) {
-          return true;
-        }
-
-        return false;
-      };
-
-      /* Validate procedure subject method to verify diagonal up-left win */
-      sub.verifyDiagonalUpLeft = function (row, col) {
-        var verifyPlayerMatch = sub.verifyPlayerMatch;
-
-        if (verifyPlayerMatch.call(this, row.upOne, col.leftOne) && (verifyPlayerMatch.call(this, row.upTwo, col.leftTwo) || verifyPlayerMatch.call(this, row.downOne, col.rightOne))) {
-          return true;
-        }
-
-        return false;
-      };
-
-      /* Validate procedure subject method to verify diagonal down-left win */
-      sub.verifyDiagonalDownLeft = function (row, col) {
-        var verifyPlayerMatch = sub.verifyPlayerMatch;
-
-        if (verifyPlayerMatch.call(this, row.downOne, col.leftOne) && (verifyPlayerMatch.call(this, row.downTwo, col.leftTwo) || verifyPlayerMatch.call(this, row.upOne, col.rightOne)))  {
-          return true;
-        }
-
-        return false;
-      };
-
-      /* Validate procedure subject method to verify diagonal up-right win */
-      sub.verifyDiagonalUpRight = function (row, col) {
-        var verifyPlayerMatch = sub.verifyPlayerMatch;
-
-        if (verifyPlayerMatch.call(this, row.upOne, col.rightOne) && (verifyPlayerMatch.call(this, row.upTwo, col.rightTwo) || verifyPlayerMatch.call(this, row.downOne, col.leftOne))) {
-          return true;
-        }
-
-        return false;
-      };
-
-      /* Validate procedure subject method to verify diagonal down-right win */
-      sub.verifyDiagonalDownRight = function  (row, col) {
-        var verifyPlayerMatch = sub.verifyPlayerMatch;
-
-        if (verifyPlayerMatch.call(this, row.downOne, col.rightOne) && (verifyPlayerMatch.call(this, row.downTwo, col.rightTwo) || verifyPlayerMatch.call(this, row.upOne, col.leftOne)))  {
-          return true;
-        }
-
-        return false;
-      };
-
-      return self.verify.call(this);
+      return true;
     };
 
+    that.calculateSquareIndex = function (row, col) {
+      return (row * that.MATRIX_MAX) + col;
+    };
+
+    that.publishFulfillWinEvent = function (player) {
+      var winValidationOpts = {
+        player: player
+      };
+
+      PubSub.publish(that.FULFILL_WIN_EVENT, [winValidationOpts]);
+    };
+
+    that.publishToggleTurnEvent = function () {
+      PubSub.publish(that.TOGGLE_TURN_EVENT, []);
+    };
   })();
 
   /**
   * Instance - Getters & Setters
   */
 
-  /* Get .index */
-  WinValidation.prototype.getIndex = function () {
-    return this.index;
+  /* Get .player */
+  WinValidation.prototype.getPlayer = function () {
+    return this.player;
   };
 
-  /* Get .index */
-  WinValidation.prototype.setIndex = function (square) {
-    this.index = this.BoardData.getIndexOfSquare(square);
+  /* Set .player */
+  WinValidation.prototype.setPlayer = function (val) {
+    this.player = val;
   };
 
   /* Get .row */
@@ -204,8 +89,8 @@ define([
   };
 
   /* Set .row */
-  WinValidation.prototype.setRow = function (square) {
-    this.row = this.BoardData.getRowOfSquare(square);
+  WinValidation.prototype.setRow = function (squareEl) {
+    this.row = this.BoardData.getRowOfSquare(squareEl);
   };
 
   /* Get .col */
@@ -214,8 +99,18 @@ define([
   };
 
   /* Set .col */
-  WinValidation.prototype.setCol = function (square) {
-    this.col = this.BoardData.getColOfSquare(square);
+  WinValidation.prototype.setCol = function (squareEl) {
+    this.col = this.BoardData.getColOfSquare(squareEl);
+  };
+
+  /* Get .index */
+  WinValidation.prototype.getSquareIndex = function () {
+    return this.squareIndex;
+  };
+
+  /* Get .index */
+  WinValidation.prototype.setSquareIndex = function (squareEl) {
+    this.squareIndex = this.BoardData.getIndexOfSquare(squareEl);
   };
 
   /* Get .rowGroup */
@@ -223,92 +118,278 @@ define([
     return this.rowGroup;
   };
 
-  /* Set .rowGroup */
-  WinValidation.prototype.setRowGroup = function (row) {
-    var that = this.Class;
-
-    this.rowGroup = {
-      upOne: row - that.ONE,
-      upTwo: row - that.TWO,
-      downOne: row + that.ONE,
-      downTwo: row + that.TWO
-    };
-  };
-
   /* Get .colGroup */
   WinValidation.prototype.getColGroup = function () {
     return this.colGroup;
   };
 
-  /* Set .colGroup */
-  WinValidation.prototype.setColGroup = function (col) {
-    var that = this.Class;
+  /* Update .rowGroup */
+  WinValidation.prototype.updateRowGroup = function () {
+    var
+      that = this.Class,
+      row = this.getRow();
 
-    this.colGroup = {
-      leftOne: col - that.ONE,
-      leftTwo: col - that.TWO,
-      rightOne: col + that.ONE,
-      rightTwo: col + that.TWO
+    this.rowGroup = {
+      oneUp: row - that.ONE,
+      twoUp: row - that.TWO,
+      threeUp: row - that.THREE,
+      oneDown: row + that.ONE,
+      twoDown: row + that.TWO,
+      threeDown: row + that.THREE
     };
   };
 
-  /* Set .col */
-  WinValidation.prototype.getPlayer = function () {
-    return this.player;
-  };
-
-  /* Set .col */
-  WinValidation.prototype.setPlayer = function (val) {
-    this.player = val;
-  };
-
-  /* Get .col */
-  WinValidation.prototype.getPlayerOfSquare = function (square) {
-    return this.BoardData.getPlayerOfSquare(square);
-  };
-
-  /* Get .square */
-  WinValidation.prototype.getSquareOfRowCol = function (row, col) {
-    return this.BoardData.getSquareOfRowCol(row, col);
-  };
-
-  WinValidation.prototype.validate = function (square, player) {
+  /* Update .colGroup */
+  WinValidation.prototype.updateColGroup = function () {
     var
       that = this.Class,
-      row,
-      col,
-      rowGroup,
-      colGroup,
-      winValidationOpts;
+      col = this.getCol();
+
+    this.colGroup = {
+      oneLeft: col - that.ONE,
+      twoLeft: col - that.TWO,
+      threeLeft: col - that.THREE,
+      oneRight: col + that.ONE,
+      twoRight: col + that.TWO,
+      threeRight: col + that.THREE
+    };
+  };
+
+  WinValidation.prototype.updateMatrixValues = function () {
+    var
+      player = this.getPlayer(),
+      squareIndex = this.getSquareIndex();
+
+    this.matrixValues[squareIndex] = player;
+  };
+
+  WinValidation.prototype.init = function () {
+    var self = this;
+
+    function initVars() {
+      self.row = 0;
+      self.col = 0;
+      self.squareIndex = 0;
+      self.rowGroup = {};
+      self.colGroup = {};
+      self.player = "";
+      self.numOfTurns = 0;
+      self.matrixValues = [];
+    }
+
+    function initMatrixValues() {
+      var
+        that = self.Class,
+        matrixMax = that.MATRIX_MAX,
+        matrixLength = (matrixMax * matrixMax) - 1,
+        index = 0;
+
+      for (; index < matrixLength; index++) {
+        self.matrixValues[index] = null;
+      }
+    }
+
+    initVars();
+    initMatrixValues();
+  };
+
+  WinValidation.prototype.validate = function (squareEl, player) {
+    var that = this.Class;
+
+    this.updateValidationData(squareEl, player);
+
+    if (this.numOfTurns >= that.MIN_TURNS_TO_WIN) {
+      this.manageWinValidation();
+    } else {
+      that.publishToggleTurnEvent();
+    }
+  };
+
+  WinValidation.prototype.updateValidationData = function (squareEl, player) {
+    // Increase number of turns
+    this.numOfTurns += 1;
 
     // Set row & col
-    this.setRow(square);
-    this.setCol(square);
+    this.setRow(squareEl);
+    this.setCol(squareEl);
 
-    // Get row & col
-    row = this.getRow();
-    col = this.getCol();
-
-    // Set rowGroup & colGroup
-    this.setRowGroup(row);
-    this.setColGroup(col);
-
-    // Get rowGroup & colGroup
-    rowGroup = this.getRowGroup();
-    colGroup = this.getColGroup();
+    // Set squareIndex
+    this.setSquareIndex(squareEl);
 
     // Set player
     this.setPlayer(player);
 
-    // Run validate procedure and if valid win
-    if (that.validateProcedure.call(this, row, col, rowGroup, colGroup)) {
-      winValidationOpts = {
-        player: player
-      };
-      PubSub.publish(that.FULFILL_WIN_EVENT, [winValidationOpts]);
+    // Update matrixValues
+    this.updateMatrixValues();
+
+    // Update rowGroup & colGroup
+    this.updateRowGroup();
+    this.updateColGroup();
+  };
+
+  WinValidation.prototype.manageWinValidation = function () {
+    var
+      that = this.Class,
+      player = this.getPlayer();
+      
+    if (this.verifyIsWin()) {
+      that.publishFulfillWinEvent(player);
     } else {
-      PubSub.publish(that.TOGGLE_TURN_EVENT, []);
+      that.publishToggleTurnEvent();
     }
+  };
+
+  /* Verify vertical, horizontal, and Diagonal win possibilities */
+  WinValidation.prototype.verifyIsWin = function () {
+    var
+      row = this.getRow(),
+      col = this.getCol(),
+      rowGroup = this.getRowGroup(),
+      colGroup = this.getColGroup();
+
+    if (this.verifyVerticalWin(rowGroup, col)) {
+      return true;
+    } else if (this.verifyHorizontalWin(row, colGroup)) {
+      return true;
+    } else if (this.verifyDiagonalUpLeftWin(rowGroup, colGroup)) {
+      return true;
+    } else if (this.verifyDiagonalUpRightWin(rowGroup, colGroup)) {
+      return true;
+    }
+
+    return false;
+  };
+
+  WinValidation.prototype.isSquarePlayerMatch = function (row, col) {
+    var
+      that = this.Class,
+      squareIndex = that.calculateSquareIndex(row, col),
+      player = this.getPlayer();
+
+    if (that.isValidSquare(row, col) && this.matrixValues[squareIndex] === player) {
+      return true;
+    }
+
+    return false;
+  };
+
+  /* Validate procedure subject method to verify vertical win */
+  WinValidation.prototype.verifyVerticalWin = function (row, col) {
+    var verify = this.isSquarePlayerMatch;
+
+    // Verify win combinations
+    // 1 up <-> 2 down
+    // 2 up <-> 1 down
+    // 3 up <-> 0 down
+    // 0 up <-> 3 down
+    
+    // -> if : verify 1up
+      // -> if : verify 1down && (verify 2down || verify 2up)
+      // -> else if : verify 3up && verify 2up
+    // -> else if : verify 3down && 2down && 1down
+
+    if (verify.call(this, row.oneUp, col)) {
+      if (verify.call(this, row.oneDown, col) && (verify.call(this, row.twoDown, col) || verify.call(this, row.twoUp, col))) {
+        return true;
+      } else if (verify.call(this, row.threeUp, col) && verify.call(this, row.twoUp, col)) {
+        return true;
+      }
+    } else if (verify.call(this, row.threeDown, col) && verify.call(this, row.twoDown, col) && verify.call(this, row.oneDown, col)) {
+      return true;
+    }
+
+    return false;
+  };
+
+  /* Validate procedure subject method to verify horizontal win */
+  WinValidation.prototype.verifyHorizontalWin = function (row, col) {
+    var verify = this.isSquarePlayerMatch;
+
+    // Verify win combinations
+    // 1 left <-> 2 right
+    // 2 left <-> 1 right
+    // 3 left <-> 0 right
+    // 0 left <-> 3 right
+
+    // -> if : verify 1left
+      // -> if : verify 1right
+        // -> if : verify 2right || verify 2left
+      // -> else if : verify 3left && verify 2left
+    // -> else if : verify 3right && 2right && 1right
+
+    if (verify.call(this, row, col.oneLeft)) {
+      if (verify.call(this, row, col.oneRight) && (verify.call(this, row, col.twoRight) || verify.call(this, row, col.twoLeft))) {
+        return true;
+      } else if (verify.call(this, row, col.threeLeft) && verify.call(this, row, col.twoLeft)) {
+        return true;
+      }
+    } else if (verify.call(this, row, col.threeRight) && verify.call(this, row, col.twoRight) && verify.call(this, row, col.oneRight)) {
+      return true;
+    }
+
+    return false;
+  };
+
+  /* Validate procedure subject method to verify diagonal up-left win */
+  WinValidation.prototype.verifyDiagonalUpLeftWin = function (row, col) {
+    var verify = this.isSquarePlayerMatch;
+
+    // Verify win combinations
+    // 1 up & 1 left <-> 2 down & 2 right
+    // 2 up & 2 left <-> 1 down & 1 right
+    // 3 up & 3 left <-> 0 down & 0 right
+    // 0 up & 0 left <-> 3 down & 3 right
+
+    // -> if : (verify 1up && verify 1left)
+      // -> if : (verify 1down && verify 1right)
+        // -> if : (verify 2down && verify 2right) || (verify 2up && verify 2left)
+      // -> else if : (verify 3up && verify 3left) && (verify 2up && verify 2left)
+    // -> else if : (verify 3down && verify 3right) && (2down && 2right) && (1down && 1right)
+
+    if (verify.call(this, row.oneUp, col.oneLeft)) {
+      if (verify.call(this, row.oneDown, col.oneRight) && (verify.call(this, row.twoDown, col.twoRight) || verify.call(this, row.twoUp, col.twoLeft))) {
+        return true;
+      } else if (verify.call(this, row.threeUp, col.threeLeft) && verify.call(this, row.twoUp, col.twoLeft)) {
+        return true;
+      }
+    } else if (verify.call(this, row.threeDown, col.threeRight) && verify.call(this, row.twoDown, col.twoRight) && verify.call(this, row.oneDown, col.oneRight)) {
+      return true;
+    }
+
+    return false;
+  };
+
+  /* Validate procedure subject method to verify diagonal up-right win */
+  WinValidation.prototype.verifyDiagonalUpRightWin = function (row, col) {
+    var verify = this.isSquarePlayerMatch;
+
+    // Verify win combinations
+    // 1 up & 1 right <-> 2 down & 2 left
+    // 2 up & 2 right <-> 1 down & 1 left
+    // 3 up & 3 right <-> 0 down & 0 left
+    // 0 up & 0 right <-> 3 down & 3 left
+
+    // -> if : (verify 1up && verify 1right)
+      // -> if : (verify 1down && verify 1left)
+        // -> if : (verify 2down && verify 2left) || (verify 2up && verify 2right)
+      // -> else if : (verify 3up && verify 3right) && (verify 2up && verify 2right)
+    // -> else if : (verify 3down && verify 3left) && (2down && 2left) && (1down && 1left)
+
+    if (verify.call(this, row.oneUp, col.oneRight)) {
+      if (verify.call(this, row.oneDown, col.oneLeft) && (verify.call(this, row.twoDown, col.twoLeft) || verify.call(this, row.twoUp, col.twoRight))) {
+        return true;
+      } else if (verify.call(this, row.threeUp, col.threeRight) && verify.call(this, row.twoUp, col.twoRight)) {
+        return true;
+      }
+    } else if (verify.call(this, row.threeDown, col.threeLeft) && verify.call(this, row.twoDown, col.twoLeft) && verify.call(this, row.oneDown, col.oneLeft)) {
+      return true;
+    }
+
+    return false;
+  };
+
+  WinValidation.prototype.reset = function () {
+    this.init();
   };
 
   return WinValidation;
