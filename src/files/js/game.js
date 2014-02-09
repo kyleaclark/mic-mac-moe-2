@@ -2,12 +2,13 @@ define([
   "jquery",
   "js/utils/Globals",
   "js/BoardTemplate",
+  "js/components/modal/FirstPlayModal",
   "js/BoardData",
   "js/WinFulfillment",
   "js/WinValidation",
   "js/PlayerTurn",
   "js/PlayerScore"
-], function ($, Globals, BoardTemplate, BoardData, WinFulfillment, WinValidation, PlayerTurn, PlayerScore) {
+], function ($, Globals, BoardTemplate, FirstPlayModal, BoardData, WinFulfillment, WinValidation, PlayerTurn, PlayerScore) {
   "use strict";
 
   function Game(config) {
@@ -33,6 +34,7 @@ define([
 
     function initObjects() {
       self.boardTemplate = new BoardTemplate();
+      self.firstPlayModal = new FirstPlayModal();
       self.boardData = new BoardData();
       self.winFulfillment = new WinFulfillment();
       self.winValidation = new WinValidation({}, self.boardData);
@@ -56,6 +58,7 @@ define([
     if (this.boardTemplate.$gameBoard.length > 0) {
       this.boardTemplate.generate();
     }
+    this.firstPlayModal.show();
   };
 
   Game.prototype.playNew = function () {
@@ -66,7 +69,7 @@ define([
     this.boardData.reset();
     this.playerTurn.reset();
     this.winValidation.reset();
-    this.winFulfillment.hideWinnerModal();
+    this.winFulfillment.toggle();
     this.playNew();
   };
 

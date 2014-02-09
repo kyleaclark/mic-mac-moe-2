@@ -6,9 +6,7 @@ define([
   "use strict";
 
   function WinValidation(config, BoardData) {
-    var
-      self = this,
-      defaults = {};
+    var self = this;
 
     function initGlobals() {
       self.VALIDATE_WIN_EVENT = Globals.VALIDATE_WIN_EVENT;
@@ -28,7 +26,6 @@ define([
     initGlobals();
     initObjects();
     setBinds();
-    console.log(this);
     this.init();
   }
 
@@ -48,11 +45,11 @@ define([
     that.THREE = 3;
 
     that.isValidSquare = function (row, col) {
-      if (row < that.MATRIX_MAX || row >= that.MATRIX_MIN || col < that.MATRIX_MAX || col >= that.MATRIX_MIN) {
-        return true;
+      if (row >= that.MATRIX_MAX || row < that.MATRIX_MIN || col >= that.MATRIX_MAX || col < that.MATRIX_MIN) {
+        return false;
       }
 
-      return false;
+      return true;
     };
 
     that.calculateSquareIndex = function (row, col) {
@@ -93,7 +90,6 @@ define([
 
   /* Set .row */
   WinValidation.prototype.setRow = function (squareEl) {
-    console.log("this : ", this);
     this.row = this.BoardData.getRowOfSquare(squareEl);
   };
 
@@ -129,7 +125,7 @@ define([
 
   /* Update .rowGroup */
   WinValidation.prototype.updateRowGroup = function () {
-    var 
+    var
       that = this.Class,
       row = this.getRow();
 
@@ -145,7 +141,7 @@ define([
 
   /* Update .colGroup */
   WinValidation.prototype.updateColGroup = function () {
-    var 
+    var
       that = this.Class,
       col = this.getCol();
 
@@ -161,24 +157,11 @@ define([
 
   WinValidation.prototype.updateMatrixValues = function () {
     var
-      that = this.Class,
       player = this.getPlayer(),
       squareIndex = this.getSquareIndex();
 
     this.matrixValues[squareIndex] = player;
   };
-
-
-  /* Get .col
-  WinValidation.prototype.getPlayerOfSquare = function (square) {
-    return this.BoardData.getPlayerOfSquare(square);
-  };
-
-  /* Get .square
-  WinValidation.prototype.getSquareOfRowCol = function (row, col) {
-    return this.BoardData.getSquareOfRowCol(row, col);
-  };
-  */
 
   WinValidation.prototype.init = function () {
     var self = this;
@@ -195,7 +178,7 @@ define([
     }
 
     function initMatrixValues() {
-      var 
+      var
         that = self.Class,
         matrixMax = that.MATRIX_MAX,
         matrixLength = (matrixMax * matrixMax) - 1,
@@ -245,7 +228,7 @@ define([
   };
 
   WinValidation.prototype.manageWinValidation = function () {
-    var 
+    var
       that = this.Class,
       player = this.getPlayer();
       
@@ -279,12 +262,9 @@ define([
 
   WinValidation.prototype.isSquarePlayerMatch = function (row, col) {
     var
-      that = this.Class, 
+      that = this.Class,
       squareIndex = that.calculateSquareIndex(row, col),
       player = this.getPlayer();
-
-    console.log(row, col, that.isValidSquare(row, col));
-    console.log(squareIndex, this.matrixValues[squareIndex], player);
 
     if (that.isValidSquare(row, col) && this.matrixValues[squareIndex] === player) {
       return true;
@@ -298,10 +278,10 @@ define([
     var verify = this.isSquarePlayerMatch;
 
     // Verify win combinations
-    // 1 up, 2 down
-    // 2 up, 1 down
-    // 3 up, 0 down
-    // 0 up, 3 down
+    // 1 up <-> 2 down
+    // 2 up <-> 1 down
+    // 3 up <-> 0 down
+    // 0 up <-> 3 down
     
     // -> if : verify 1up
       // -> if : verify 1down && (verify 2down || verify 2up)
@@ -309,7 +289,6 @@ define([
     // -> else if : verify 3down && 2down && 1down
 
     if (verify.call(this, row.oneUp, col)) {
-      console.log("oneUp");
       if (verify.call(this, row.oneDown, col) && (verify.call(this, row.twoDown, col) || verify.call(this, row.twoUp, col))) {
         return true;
       } else if (verify.call(this, row.threeUp, col) && verify.call(this, row.twoUp, col)) {
@@ -327,16 +306,26 @@ define([
     var verify = this.isSquarePlayerMatch;
 
     // Verify win combinations
-    // 1 left, 2 right
-    // 2 left, 1 right
-    // 3 left, 0 right
-    // 0 left, 3 right
+    // 1 left <-> 2 right
+    // 2 left <-> 1 right
+    // 3 left <-> 0 right
+    // 0 left <-> 3 right
 
     // -> if : verify 1left
       // -> if : verify 1right
         // -> if : verify 2right || verify 2left
       // -> else if : verify 3left && verify 2left
     // -> else if : verify 3right && 2right && 1right
+
+    if (verify.call(this, row, col.oneLeft)) {
+      if (verify.call(this, row, col.oneRight) && (verify.call(this, row, col.twoRight) || verify.call(this, row, col.twoLeft))) {
+        return true;
+      } else if (verify.call(this, row, col.threeLeft) && verify.call(this, row, col.twoLeft)) {
+        return true;
+      }
+    } else if (verify.call(this, row, col.threeRight) && verify.call(this, row, col.twoRight) && verify.call(this, row, col.oneRight)) {
+      return true;
+    }
 
     return false;
   };
@@ -346,10 +335,10 @@ define([
     var verify = this.isSquarePlayerMatch;
 
     // Verify win combinations
-    // 1 up & 1 left, 2 down & 2 right
-    // 2 up & 2 left, 1 down & 1 right
-    // 3 up & 3 left, 0 down & 0 right
-    // 0 up & 0 left, 3 down & 3 right
+    // 1 up & 1 left <-> 2 down & 2 right
+    // 2 up & 2 left <-> 1 down & 1 right
+    // 3 up & 3 left <-> 0 down & 0 right
+    // 0 up & 0 left <-> 3 down & 3 right
 
     // -> if : (verify 1up && verify 1left)
       // -> if : (verify 1down && verify 1right)
@@ -357,7 +346,15 @@ define([
       // -> else if : (verify 3up && verify 3left) && (verify 2up && verify 2left)
     // -> else if : (verify 3down && verify 3right) && (2down && 2right) && (1down && 1right)
 
-    
+    if (verify.call(this, row.oneUp, col.oneLeft)) {
+      if (verify.call(this, row.oneDown, col.oneRight) && (verify.call(this, row.twoDown, col.twoRight) || verify.call(this, row.twoUp, col.twoLeft))) {
+        return true;
+      } else if (verify.call(this, row.threeUp, col.threeLeft) && verify.call(this, row.twoUp, col.twoLeft)) {
+        return true;
+      }
+    } else if (verify.call(this, row.threeDown, col.threeRight) && verify.call(this, row.twoDown, col.twoRight) && verify.call(this, row.oneDown, col.oneRight)) {
+      return true;
+    }
 
     return false;
   };
@@ -367,10 +364,10 @@ define([
     var verify = this.isSquarePlayerMatch;
 
     // Verify win combinations
-    // 1 up & 1 right, 2 down & 2 left
-    // 2 up & 2 right, 1 down & 1 left
-    // 3 up & 3 right, 0 down & 0 left
-    // 0 up & 0 right, 3 down & 3 left
+    // 1 up & 1 right <-> 2 down & 2 left
+    // 2 up & 2 right <-> 1 down & 1 left
+    // 3 up & 3 right <-> 0 down & 0 left
+    // 0 up & 0 right <-> 3 down & 3 left
 
     // -> if : (verify 1up && verify 1right)
       // -> if : (verify 1down && verify 1left)
@@ -378,7 +375,15 @@ define([
       // -> else if : (verify 3up && verify 3right) && (verify 2up && verify 2right)
     // -> else if : (verify 3down && verify 3left) && (2down && 2left) && (1down && 1left)
 
-    
+    if (verify.call(this, row.oneUp, col.oneRight)) {
+      if (verify.call(this, row.oneDown, col.oneLeft) && (verify.call(this, row.twoDown, col.twoLeft) || verify.call(this, row.twoUp, col.twoRight))) {
+        return true;
+      } else if (verify.call(this, row.threeUp, col.threeRight) && verify.call(this, row.twoUp, col.twoRight)) {
+        return true;
+      }
+    } else if (verify.call(this, row.threeDown, col.threeLeft) && verify.call(this, row.twoDown, col.twoLeft) && verify.call(this, row.oneDown, col.oneLeft)) {
+      return true;
+    }
 
     return false;
   };
