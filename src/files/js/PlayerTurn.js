@@ -98,7 +98,7 @@ define([
     var playerOfSquare = this.getPlayerOfSquare(square);
 
     // Is valid if square is in an empty board square
-    if (square !== this.gameBoardEl && playerOfSquare === this.EMPTY) {
+    if (playerOfSquare === this.EMPTY) {
       return true;
     }
 
@@ -178,7 +178,7 @@ define([
       square = event.target.id,
       player = this.getPlayer();
 
-    if (square !== "" && this.validate(square)) {
+    if (square !== this.gameBoardEl && square !== "" && this.validate(square)) {
       this.render(player, square);
       this.setPlayerOfSquare(square);
       
