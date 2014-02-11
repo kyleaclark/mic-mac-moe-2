@@ -1,7 +1,7 @@
 mic-mac-moe-2
 ============
 
-##micmacmoejs.com
+##http://micmacmoejs.com
 
 ##Authored Date
 
