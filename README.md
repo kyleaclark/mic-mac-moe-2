@@ -23,15 +23,17 @@ Docpad
 
 Grunt
 
+Bower
+
 RequireJS
-
-jQuery
-
-UnderscoreJS
 
 CoffeeScript
 
 Eco
+
+jQuery
+
+UnderscoreJS
 
 HTML5
 
