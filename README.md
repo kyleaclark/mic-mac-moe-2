@@ -141,13 +141,5 @@ Notice that this URL is also displayed in the console output after executing `gr
 
 `grunt build`: build site (without running server)
 
-`grunt docs`: generate documentation with [groc](https://github.com/nevir/groc)
-
-`grunt deploy`: deploy site to http://valcyte-redesign.cd.meltdev.com
-
-`grunt production`: run site in production mode
-
-`grunt run-server`: run node server
-
-`grunt test`: run [Chai](http://chaijs.com/) tests using [Mocha](http://visionmedia.github.io/mocha/)
+`grunt production`: run site in production mode and distribute files to root/out
 
